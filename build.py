@@ -23,6 +23,9 @@ skill=hermes/'plugin'/'glyph-studio'/'skills'/'glyph-studio'
 for source,name in [('agent-guide.txt','scene-contract.txt'),('scene.schema.json','scene.schema.json'),('example-scene.json','example-scene.json')]:
     shutil.copyfile(dist/source,skill/'references'/name)
 shutil.copyfile(hermes/'plugin'/'glyph-studio'/'client.py',skill/'scripts'/'client.py')
+flow_skill=hermes/'plugin'/'glyph-studio'/'skills'/'glyph-flow'
+(flow_skill/'references').mkdir(parents=True,exist_ok=True)
+shutil.copyfile(dist/'flow-guide.txt',flow_skill/'references'/'flow-contract.txt')
 html=(dist/'index.html').read_text().replace('<link rel="stylesheet" href="agent-panel.css">','<style>'+(dist/'agent-panel.css').read_text()+'</style>').replace('<link rel="stylesheet" href="style.css">','<style>'+(dist/'style.css').read_text()+'</style>')
 for name in ['scene.js','glyph-player.js','app.js','agent-panel.js']:
     html=html.replace('<script defer src="'+name+'"></script>','')
@@ -31,10 +34,10 @@ html=html.replace('href="components.html"','href="https://github.com/bananawalnu
 html=html.replace('href="agent-guide.txt"','href="data:text/plain;charset=utf-8,'+quote((dist/'agent-guide.txt').read_text())+'"').replace('href="./"','href="Glyph%20Studio.html"')
 html=html.replace('href="betta.html"','href="Betta%20-%20Glyph%20Study.html"').replace('href="life.html"','href="Anima%20-%20Living%20Glyph%20Studies.html"')
 (root/'Glyph Studio.html').write_text(html)
-flow=(dist/'flow.html').read_text().replace('<link rel="stylesheet" href="flow.css">','<style>'+(dist/'flow.css').read_text()+'</style>')
-for name in ['glyph-flow.js','flow-demo.js']:
+flow=(dist/'flow.html').read_text().replace('<link rel="stylesheet" href="agent-panel.css">','<style>'+(dist/'agent-panel.css').read_text()+'</style>').replace('<link rel="stylesheet" href="flow.css">','<style>'+(dist/'flow.css').read_text()+'</style>')
+for name in ['glyph-flow.js','flow-demo.js','agent-panel.js']:
     flow=flow.replace('<script defer src="'+name+'"></script>','')
-flow=flow.replace('</body>',''.join('<script>'+(dist/name).read_text()+'</script>' for name in ['glyph-flow.js','flow-demo.js'])+'</body>')
+flow=flow.replace('</body>',''.join('<script>'+(dist/name).read_text()+'</script>' for name in ['glyph-flow.js','flow-demo.js','agent-panel.js'])+'</body>')
 flow=flow.replace('href="/"','href="Glyph%20Studio.html"').replace('href="components.html"','href="https://github.com/bananawalnut/glyph-studio/blob/main/docs/functional-components.md"')
 (root/'Glyph Flow - Components.html').write_text(flow)
 betta=(dist/'betta.html').read_text()

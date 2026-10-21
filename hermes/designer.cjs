@@ -2,7 +2,8 @@
 const fs=require('node:fs'),path=require('node:path'),E=require('../dist/scene.js');
 const ROOT=path.join(__dirname,'plugin','glyph-studio'),directory=path.join(ROOT,'designer');
 const profile=()=>JSON.parse(fs.readFileSync(path.join(directory,'profile.json'),'utf8'));
-function context(prompt,provider){const p=profile(),skills=p.skills.filter(s=>s.always||[s.id,...s.triggers].some(t=>new RegExp('(?<!\\w)'+t.replace(/[.*+?^${}()|[\]\\]/g,'\\$&')+'(?!\\w)','i').test(prompt))).map(s=>s.id);const text=[...['SOUL.md','WORKFLOW.md'].map(n=>fs.readFileSync(path.join(directory,n),'utf8')),'RUNTIME: '+p.execution[provider],...skills.map(id=>fs.readFileSync(path.join(ROOT,'skills',id,'SKILL.md'),'utf8'))].join('\n\n');return {profile:p.id,name:p.name,skills,text};}
+function toolNames(provider,target){const names=profile().tools[provider];return !target?names:names.filter(n=>target==='flow'?n.startsWith('glyph_flow_'):!n.startsWith('glyph_flow_'));}
+function context(prompt,provider,target){const p=profile(),skills=p.skills.filter(s=>target==='flow'?s.id==='glyph-flow':(s.id!=='glyph-flow'&&(s.always||[s.id,...s.triggers].some(t=>new RegExp('(?<!\\w)'+t.replace(/[.*+?^${}()|[\]\\]/g,'\\$&')+'(?!\\w)','i').test(prompt))))).map(s=>s.id);const text=[...['SOUL.md','WORKFLOW.md'].map(n=>fs.readFileSync(path.join(directory,n),'utf8')),'RUNTIME: '+p.execution[provider],...skills.map(id=>fs.readFileSync(path.join(ROOT,'skills',id,'SKILL.md'),'utf8'))].join('\n\n');return {profile:p.id,name:p.name,skills,text};}
 const ANIMALS={
  'pisces':{name:'Paired fish',motion:'Two offset body waves; a symbolic pair, not a separate species.',source:'https://pubmed.ncbi.nlm.nih.gov/34853171/'},
  'jellyfish':{name:'Moon jelly',motion:'Contraction, longer refill and glide; lagging oral arms.',source:'https://pubmed.ncbi.nlm.nih.gov/24101461/'},
@@ -19,4 +20,4 @@ function library(args={}){const kind=args.kind||'profile',id=args.id;if(id!==und
  throw Error('Unknown library kind');
 }
 function audit(scene,revision=null){let s=scene;try{E.validate(s);}catch(e){return {valid:false,revision,errors:[e.message],visualReview:false,performanceMeasured:false};}const points=E.sample(s,0),counts={};let finite=true;for(const p of points){counts[p.id]=(counts[p.id]||0)+1;finite=finite&&p.xyz.every(Number.isFinite);}return {valid:true,revision,errors:[],warnings:E.loopWarnings(s),frame:0,pointCount:points.length,pointsByObject:counts,finiteGeometry:finite,recipeBytes:Buffer.byteLength(JSON.stringify(s)),seed:s.seed,loopFrames:Math.round(s.duration*s.fps),surfaces:(s.surfaces||[]).map(h=>({id:h.id,shape:h.shape,layers:s.objects.filter(o=>o.geometry.host===h.id).map(o=>o.id)})),visualReview:false,performanceMeasured:false,note:'Analytic validation and frame-zero samples, not pixels or measured frame time.'};}
-module.exports={profile,context,library,audit,ANIMALS};
+module.exports={profile,toolNames,context,library,audit,ANIMALS};

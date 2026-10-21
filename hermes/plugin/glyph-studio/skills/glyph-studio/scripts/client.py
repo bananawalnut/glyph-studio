@@ -38,8 +38,12 @@ def connection():
 
 def call(name, arguments=None):
     try:
+        scope=os.environ.get('GLYPH_STUDIO_SCOPE')
+        if scope=='flow' and not name.startswith('glyph_flow_') or scope=='scene' and name.startswith('glyph_flow_'):
+            return {'ok':False,'error':{'code':'target_denied','message':'Tool belongs to a different designer target.'}}
         url, token = connection()
-        req = urllib.request.Request(url + '/api/tool', data=json.dumps({'name':name,'arguments':arguments or {}}).encode(), headers={'Authorization':'Bearer '+token,'Content-Type':'application/json'}, method='POST')
+        context={'job_id':os.environ['GLYPH_STUDIO_JOB']} if scope=='flow' and os.environ.get('GLYPH_STUDIO_JOB') else {}
+        req = urllib.request.Request(url + '/api/tool', data=json.dumps({'name':name,'arguments':arguments or {},'context':context}).encode(), headers={'Authorization':'Bearer '+token,'Content-Type':'application/json'}, method='POST')
         opener = urllib.request.build_opener(urllib.request.ProxyHandler({}), NoRedirect())
         try:
             with opener.open(req, timeout=8) as response:
@@ -57,7 +61,7 @@ def call(name, arguments=None):
 
 def main():
     parser=argparse.ArgumentParser(description='Call Glyph Studio functions without the Hermes plugin. Arguments are read as JSON from stdin.')
-    parser.add_argument('tool', choices=['glyph_studio_read','glyph_studio_compile','glyph_studio_apply','glyph_studio_update','glyph_studio_add','glyph_studio_remove','glyph_studio_preview','glyph_studio_audit','glyph_studio_library'])
+    parser.add_argument('tool', choices=['glyph_studio_read','glyph_studio_compile','glyph_studio_apply','glyph_studio_update','glyph_studio_add','glyph_studio_remove','glyph_studio_preview','glyph_studio_audit','glyph_studio_library','glyph_flow_read','glyph_flow_validate','glyph_flow_apply','glyph_flow_edit','glyph_flow_invoke'])
     args=parser.parse_args()
     try:
         data=json.load(sys.stdin) if not sys.stdin.isatty() else {}

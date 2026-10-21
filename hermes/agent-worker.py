@@ -40,6 +40,9 @@ socket.socket.connect_ex = connect_ex
 try:
     request = json.loads(sys.stdin.read())
     config = request['config']
+    target = request.get('target', 'scene')
+    if target not in ('scene', 'flow'):
+        raise RuntimeError('Unknown designer target.')
     from urllib.parse import urlparse
     url = urlparse(config['base_url'])
     if url.scheme != 'http' or url.hostname != '127.0.0.1' or url.username or url.password:
@@ -59,18 +62,22 @@ try:
         if set(loaded.tools_registered)!=set(profile['tools']['hermes']):
             raise RuntimeError('Glyph Studio plugin could not load.')
         from run_agent import AIAgent
-        guide = (ROOT.parent/'dist'/'agent-guide.txt').read_text()
+        guide = (ROOT.parent/'dist'/('flow-guide.txt' if target == 'flow' else 'agent-guide.txt')).read_text()
         spec=importlib.util.spec_from_file_location('studio_designer_context',ROOT/'designer-context.py')
         designer=importlib.util.module_from_spec(spec);spec.loader.exec_module(designer)
-        active=designer.context(request['prompt'],'hermes',plugin)
-        system=active['text']+'\nSCENE CONTRACT:\n'+guide
+        active=designer.context(request['prompt'],'hermes',plugin,target)
+        system=active['text']+'\nDESIGN CONTRACT:\n'+guide
+        system+='\nYou are scoped to '+target+'. Use only the advertised tools. For flows every edit and method call is staged until this turn completes; read the draft first. Preserve unrelated current state. A queued call needs a browser receipt before delivery. Never claim a screenshot review.'
         agent = AIAgent(model=config['model'], **credentials, enabled_toolsets=['glyph_studio'],
                         max_iterations=12, max_tokens=2400, quiet_mode=True,
                         skip_context_files=True, skip_memory=True, load_soul_identity=False,
                         checkpoints_enabled=False, save_trajectories=False,
                         tool_start_callback=lambda _id, name, *args, **kwargs: emit({'type':'tool','name':name}))
+        allowed={n for n in profile['tools']['hermes'] if n.startswith('glyph_flow_') == (target == 'flow')}
+        agent.tools=[t for t in agent.tools if t.get('function',t).get('name') in allowed]
         names = {t.get('function',t).get('name') for t in agent.tools}
-        if names != set(loaded.tools_registered):
+        agent.valid_tool_names=names
+        if names != allowed:
             raise RuntimeError('Agent tool isolation check failed.')
         emit({'type':'ready','profile':active['profile'],'skills':active['skills']})
         result = agent.run_conversation(request['prompt'], system_message=system)

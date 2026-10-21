@@ -5,13 +5,13 @@ import re
 import sys
 
 PLUGIN=Path(__file__).resolve().parent/'plugin'/'glyph-studio'
-def context(prompt,provider,plugin=PLUGIN):
+def context(prompt,provider,plugin=PLUGIN,target=None):
     plugin=Path(plugin)
     profile=json.loads((plugin/'designer'/'profile.json').read_text())
     selected=[]
     for skill in profile['skills']:
         terms=[skill['id'],*skill['triggers']]
-        if skill['always'] or any(re.search(r'(?<!\w)'+re.escape(term)+r'(?!\w)',prompt,re.I) for term in terms):
+        if (target=='flow' and skill['id']=='glyph-flow') or (target!='flow' and skill['id']!='glyph-flow' and (skill['always'] or any(re.search(r'(?<!\w)'+re.escape(term)+r'(?!\w)',prompt,re.I) for term in terms))):
             selected.append(skill['id'])
     pieces=[(plugin/'designer'/name).read_text() for name in [profile['identity'],profile['workflow']]]
     pieces+=['RUNTIME: '+profile['execution'][provider]]
@@ -19,4 +19,4 @@ def context(prompt,provider,plugin=PLUGIN):
     return {'profile':profile['id'],'name':profile['name'],'skills':selected,'text':'\n\n'.join(pieces)}
 if __name__=='__main__':
     request=json.load(sys.stdin)
-    print(json.dumps(context(request.get('prompt',''),request.get('provider','hermes'),request.get('plugin',PLUGIN))))
+    print(json.dumps(context(request.get('prompt',''),request.get('provider','hermes'),request.get('plugin',PLUGIN),request.get('target'))))

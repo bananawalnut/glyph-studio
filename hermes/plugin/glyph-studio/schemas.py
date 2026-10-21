@@ -1,5 +1,5 @@
 """Tool definitions consumed by Hermes' native plugin registry."""
-REV={'type':'integer','minimum':0,'description':'Scene revision returned by the last read. Writes fail if it is stale.'}
+REV={'type':'integer','minimum':0,'description':'Current target revision returned by its last read; flow jobs use their draft revision. Stale writes fail.'}
 KIND={'type':'string','enum':['surface','object']}
 def tool(name,description,properties,required=()):
     return {'name':name,'description':description,'parameters':{'type':'object','properties':properties,'required':list(required),'additionalProperties':False}}
@@ -23,6 +23,12 @@ DEFINITION['properties']['id']=deepcopy(OBJECT['properties']['id'])
 DEFINITION['required']=['id']
 
 TOOLS=[
+ tool('glyph_flow_read','Read the functional flow document, revision, typed method interfaces, registry and invocation receipts. In studio flow jobs this reads the staged draft.',{}),
+ tool('glyph_flow_validate','Read-only validation of current flow or candidate flow_json, including current states and contracts. No pixels or formal proof.',{'flow_json':{'type':'string','maxLength':100000}}),
+ tool('glyph_flow_apply','Replace the flow with a complete validated data-only flow_json. Studio flow jobs stage this proposal; they commit once after completion if the starting revision is still current.',{'flow_json':{'type':'string','maxLength':100000},'expected_revision':REV},['flow_json','expected_revision']),
+ tool('glyph_flow_edit','Add, merge-patch or remove a named component, connection, contract or obstacle. update flow changes root metadata/arrays. changes_json is JSON merge patch: null deletes keys, arrays replace. Studio edits are staged.',{'action':{'type':'string','enum':['add','update','remove']},'kind':{'type':'string','enum':['component','connection','contract','obstacle','flow']},'id':{'type':'string'},'changes_json':{'type':'string','maxLength':100000},'expected_revision':REV},['action','kind','expected_revision']),
+ tool('glyph_flow_invoke','Stage a typed method invocation such as source.add(record). It is queued on proposal commit and animated by an open flow browser. Do not claim delivery until a browser receipt says arrived.',{'component':{'type':'string'},'method':{'type':'string'},'payload_json':{'type':'string','maxLength':100000},'request_id':{'type':'string','maxLength':80},'expected_revision':REV},['component','method','payload_json','request_id','expected_revision']),
+
  tool('glyph_studio_audit','Read-only validation, loop warnings, sample counts and host dependencies for the saved recipe or candidate recipe_json. Does not render pixels, measure FPS or mutate the scene.',{'recipe_json':{'type':'string','maxLength':100000}}),
  tool('glyph_studio_library','Read the studio designer profile, a focused skill, available scene presets or Anima animal references. Omit id for a catalog. Presets are candidates, not applied edits; animal source geometry is not editable here.',{'kind':{'type':'string','enum':['profile','skill','preset','animal']},'id':{'type':'string','maxLength':100}},['kind']),
  tool('glyph_studio_read','Read the current local Glyph Studio recipe, scene revision, preview state and loop warnings.',{}),

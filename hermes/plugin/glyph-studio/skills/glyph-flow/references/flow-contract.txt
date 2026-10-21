@@ -1,0 +1,22 @@
+GLYPH FLOW DOCUMENT v1
+Read glyph_flow_read for the current complete document, revision and strategy registry. Keep content state when editing configuration. Use only registered strategies; unknown fields/names fail validation.
+
+Root: {version:1,title,contracts:{name:schema},components:[],connections:[],obstacles:[]}.
+Component: {id,title,position:{x,y,width,height},spin,stateContract,initial,state,methods:{name:{input,output,handler:{type,...options}}},output:{type,contract},layout:{type,...options}}.
+Contracts are names in contracts or inline closed schemas. Schema types: object/array/string/number/integer/boolean/null. Object schemas need properties and additionalProperties:false. Optional required; array items/minItems/maxItems; string minLength/maxLength; numeric minimum/maximum; enum. No $ref/pattern/union/code. Max 64KiB JSON, 10 components, 32 contracts, 16 methods/component, 24 connections, 3 obstacles. Coordinates are percentages, every box fits 0..100. Component width/height >=8. spin is radians/sec in -2..2.
+
+Handler types:
+append: array state; one input or many:true array; optional key rejects duplicates; result echoes input.
+upsert: array state; key (default id), optional many:true; result echoes input.
+remove: array state; input is key value or object with key; missing record rejects; result echoes input.
+replace: state=input; result=input.
+group: object-of-arrays state; merge by key (default id), groupBy (default category), optional many:true; unknown groups reject; result=input.
+accept-envelope: state=input; requires input.rows array and input.total===rows.length; result=input.
+select: object state; sets selected=input; result=input.
+Every method's result and resulting state are independently validated before commit.
+
+Layouts: sphere/grid/helix; optional key (default id), label (default title), color, density 0..240. grid may use columns 1..12 or groupBy/groups. Layout gets structured state and returns glyph marks. Exports: identity publishes state; flatten publishes array content; envelope publishes {rows,total}.
+
+Connection: {id,title,from,to,method,mapping:{type:'identity'|'first'|'batch',size?}}. batch requires size1..24. from/to are distinct component ids; method exists on receiver. Mapping validates against current data. Obstacle: {id,title,position:{x,y,width,height}}.
+
+Protocol method call: {id,component,method,payload}. A programmer defines the component interface; add is an example name, not a global requirement. Calls animate and mutate the receiver only after arrival. Staged/queued is not delivered. The browser receipt is authoritative for delivery. No arbitrary JavaScript is executed from a flow document.

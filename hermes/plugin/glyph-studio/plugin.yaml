@@ -1,5 +1,5 @@
 name: glyph-studio
-version: "1.1.0"
+version: "1.2.0"
 kind: standalone
 description: "Design and edit reproducible Glyph Studio scenes through a local authenticated bridge."
 provides_tools:
@@ -12,3 +12,8 @@ provides_tools:
   - glyph_studio_preview
   - glyph_studio_audit
   - glyph_studio_library
+  - glyph_flow_read
+  - glyph_flow_validate
+  - glyph_flow_apply
+  - glyph_flow_edit
+  - glyph_flow_invoke

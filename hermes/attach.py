@@ -56,7 +56,7 @@ def prepare(home, connection, platforms=None, replace=False, dry_run=False, desi
         if 'glyph_studio' not in toolsets[platform]:
             toolsets[platform].append('glyph_studio')
     destinations=[(ROOT/'plugin'/'glyph-studio',home/'plugins'/'glyph-studio'),(ROOT/'plugin'/'glyph-studio'/'skills'/'glyph-studio',home/'skills'/'creative'/'glyph-studio')]
-    for skill in ['glyph-surfaces','glyph-biomotion','glyph-review']:
+    for skill in ['glyph-surfaces','glyph-biomotion','glyph-review','glyph-flow']:
         destinations.append((ROOT/'plugin'/'glyph-studio'/'skills'/skill,home/'skills'/'creative'/skill))
     for source,dest in destinations:
         if dest.is_symlink() or not dest.resolve().is_relative_to(home):

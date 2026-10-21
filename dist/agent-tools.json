@@ -1,5 +1,134 @@
 [
   {
+    "name": "glyph_flow_read",
+    "description": "Read the functional flow document, revision, typed method interfaces, registry and invocation receipts. In studio flow jobs this reads the staged draft.",
+    "parameters": {
+      "type": "object",
+      "properties": {},
+      "required": [],
+      "additionalProperties": false
+    }
+  },
+  {
+    "name": "glyph_flow_validate",
+    "description": "Read-only validation of current flow or candidate flow_json, including current states and contracts. No pixels or formal proof.",
+    "parameters": {
+      "type": "object",
+      "properties": {
+        "flow_json": {
+          "type": "string",
+          "maxLength": 100000
+        }
+      },
+      "required": [],
+      "additionalProperties": false
+    }
+  },
+  {
+    "name": "glyph_flow_apply",
+    "description": "Replace the flow with a complete validated data-only flow_json. Studio flow jobs stage this proposal; they commit once after completion if the starting revision is still current.",
+    "parameters": {
+      "type": "object",
+      "properties": {
+        "flow_json": {
+          "type": "string",
+          "maxLength": 100000
+        },
+        "expected_revision": {
+          "type": "integer",
+          "minimum": 0,
+          "description": "Current target revision returned by its last read; flow jobs use their draft revision. Stale writes fail."
+        }
+      },
+      "required": [
+        "flow_json",
+        "expected_revision"
+      ],
+      "additionalProperties": false
+    }
+  },
+  {
+    "name": "glyph_flow_edit",
+    "description": "Add, merge-patch or remove a named component, connection, contract or obstacle. update flow changes root metadata/arrays. changes_json is JSON merge patch: null deletes keys, arrays replace. Studio edits are staged.",
+    "parameters": {
+      "type": "object",
+      "properties": {
+        "action": {
+          "type": "string",
+          "enum": [
+            "add",
+            "update",
+            "remove"
+          ]
+        },
+        "kind": {
+          "type": "string",
+          "enum": [
+            "component",
+            "connection",
+            "contract",
+            "obstacle",
+            "flow"
+          ]
+        },
+        "id": {
+          "type": "string"
+        },
+        "changes_json": {
+          "type": "string",
+          "maxLength": 100000
+        },
+        "expected_revision": {
+          "type": "integer",
+          "minimum": 0,
+          "description": "Current target revision returned by its last read; flow jobs use their draft revision. Stale writes fail."
+        }
+      },
+      "required": [
+        "action",
+        "kind",
+        "expected_revision"
+      ],
+      "additionalProperties": false
+    }
+  },
+  {
+    "name": "glyph_flow_invoke",
+    "description": "Stage a typed method invocation such as source.add(record). It is queued on proposal commit and animated by an open flow browser. Do not claim delivery until a browser receipt says arrived.",
+    "parameters": {
+      "type": "object",
+      "properties": {
+        "component": {
+          "type": "string"
+        },
+        "method": {
+          "type": "string"
+        },
+        "payload_json": {
+          "type": "string",
+          "maxLength": 100000
+        },
+        "request_id": {
+          "type": "string",
+          "maxLength": 80
+        },
+        "expected_revision": {
+          "type": "integer",
+          "minimum": 0,
+          "description": "Current target revision returned by its last read; flow jobs use their draft revision. Stale writes fail."
+        }
+      },
+      "required": [
+        "component",
+        "method",
+        "payload_json",
+        "request_id",
+        "expected_revision"
+      ],
+      "additionalProperties": false
+    }
+  },
+  {
     "name": "glyph_studio_audit",
     "description": "Read-only validation, loop warnings, sample counts and host dependencies for the saved recipe or candidate recipe_json. Does not render pixels, measure FPS or mutate the scene.",
     "parameters": {
@@ -543,7 +672,7 @@
         "expected_revision": {
           "type": "integer",
           "minimum": 0,
-          "description": "Scene revision returned by the last read. Writes fail if it is stale."
+          "description": "Current target revision returned by its last read; flow jobs use their draft revision. Stale writes fail."
         }
       },
       "required": [
@@ -837,7 +966,7 @@
         "expected_revision": {
           "type": "integer",
           "minimum": 0,
-          "description": "Scene revision returned by the last read. Writes fail if it is stale."
+          "description": "Current target revision returned by its last read; flow jobs use their draft revision. Stale writes fail."
         }
       },
       "required": [
@@ -1137,7 +1266,7 @@
         "expected_revision": {
           "type": "integer",
           "minimum": 0,
-          "description": "Scene revision returned by the last read. Writes fail if it is stale."
+          "description": "Current target revision returned by its last read; flow jobs use their draft revision. Stale writes fail."
         }
       },
       "required": [
@@ -1167,7 +1296,7 @@
         "expected_revision": {
           "type": "integer",
           "minimum": 0,
-          "description": "Scene revision returned by the last read. Writes fail if it is stale."
+          "description": "Current target revision returned by its last read; flow jobs use their draft revision. Stale writes fail."
         }
       },
       "required": [
@@ -1194,7 +1323,7 @@
         "expected_revision": {
           "type": "integer",
           "minimum": 0,
-          "description": "Scene revision returned by the last read. Writes fail if it is stale."
+          "description": "Current target revision returned by its last read; flow jobs use their draft revision. Stale writes fail."
         }
       },
       "required": [

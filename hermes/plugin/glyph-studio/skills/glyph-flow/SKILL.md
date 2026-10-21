@@ -1,0 +1,19 @@
+---
+name: glyph-flow
+description: Create and edit functional Glyph Flow components, named method interfaces, contracts, layouts and data connections, or queue a typed component invocation.
+---
+# Component interfaces and flows
+
+See [the flow document contract](references/flow-contract.txt) for exact fields and registered options.
+
+Use the FLOW target and `glyph_flow_read` first. It supplies the complete current flow, revision, named contracts and registered handler/layout/export strategies. Preserve current component `state`, unrelated definitions and stable IDs. `initial` is the reset baseline; changing a layout does not authorize resetting content.
+
+A component owns `stateContract`, `methods`, `output` and `layout`. Each method name is programmer-defined, with independent `input` and `output` contracts and a registered `handler`. For example `source.add(record)` can append to array state and return the accepted record. `remove` may accept an identifier and use a different handler. Contract values can name entries in the flow's `contracts` table or contain the supported inline JSON schema. A programmer can implement additional trusted interfaces and registry strategies in code; do not invent unregistered handler or layout names in a flow document.
+
+Use `glyph_flow_edit` for minimal edits. Its `changes_json` is a JSON merge patch: object keys merge, arrays replace, null deletes a key. A component edit can change a layout, add/remove method definitions, or change contracts. Use `glyph_flow_apply` with the complete `flow_json` for a new graph. Validate with `glyph_flow_validate` before finishing. Methods removed from an interface must also be removed from referencing connections. Component positions are percentages inside the flow. Connections name sender, receiver, receiving method and a mapping (`identity`, `batch` with size, or `first`).
+
+To add actual content, do not patch `state` as a substitute for the requested animation. Stage `glyph_flow_invoke` with component, method, JSON payload, a fresh stable request_id and the draft's current expected_revision. Read the interface first: `source.add` usually accepts one record, while `cluster.add` may accept an array. A browser will animate the method call to its receiving mark and run its handler after arrival. Duplicate ids with different arguments fail. A staged or queued call is not delivered; report that a browser receipt is still required.
+
+Inside the studio's Hermes worker, all flow edits and invocations are staged in a draft. Read/edit results carry virtual draft revisions. The bridge applies the final proposal only when the original live revision still matches; Stop or a stale revision discards the draft. Codex has read/validate tools and returns a complete flow proposal plus optional calls through structured output; the same commit gate applies.
+
+The flow document is data. Never put source code, functions, expressions or URLs into handler/layout fields. Pure handlers and organizers are application code behind the registry, not model-generated code. Existing scene recipes and animal source geometry are separate targets. Analytic validation is not a screenshot review, a performance measurement or formal proof.

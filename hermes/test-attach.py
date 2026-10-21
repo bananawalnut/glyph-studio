@@ -41,7 +41,7 @@ with tempfile.TemporaryDirectory(prefix='glyph-attach-') as temporary:
     assert (home/'SOUL.md').read_text()==(attach.ROOT/'plugin/glyph-studio/designer/SOUL.md').read_text()
     assert json.loads((home/'studio-designer.json').read_text())['id']=='glyph-studio-designer'
     assert any(p.read_text()=='Preserve this identity in a backup' for p in (home/'.glyph-studio-backups').rglob('SOUL.md'))
-    for skill in ['glyph-surfaces','glyph-biomotion','glyph-review']:
+    for skill in ['glyph-surfaces','glyph-biomotion','glyph-review','glyph-flow']:
         assert (home/'skills/creative'/skill/'SKILL.md').is_file()
     outside=Path(temporary)/'outside';outside.write_text('untouched')
     for name in ['SOUL.md','studio-designer.json']:
@@ -55,4 +55,4 @@ with tempfile.TemporaryDirectory(prefix='glyph-attach-') as temporary:
         assert outside.read_text()=='untouched'
         assert (home/'config.yaml').read_text()==before
         target.unlink();target.write_text(previous)
-print('PASS dry-run, explicit-home installation, discoverable skill, config preservation, four skills, opt-in identity/backup and symlink rejection')
+print('PASS dry-run, explicit-home installation, discoverable skill, config preservation, five skills, opt-in identity/backup and symlink rejection')

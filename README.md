@@ -68,11 +68,11 @@ npm run dev:agent
 
 This starts the same editor with an on-device Hermes designer. It requires an installed [Hermes Agent](https://github.com/NousResearch/hermes-agent), [llama.cpp](https://github.com/ggml-org/llama.cpp), Python 3.10 or newer, and local model weights. No weights are downloaded or included in this repository. The default is `~/Models/Qwen3.5-9B-Q4_K_M.gguf`; see [local model and plugin setup](hermes/README.md) for other paths and endpoints.
 
-The Zenith prompt box supports Apply change, Stop, and Undo. The worker exposes nine studio functions, uses a dedicated `.hermes-home`, and blocks non-loopback network connections. It does not use your hosted model credentials. Each prompt reads the current scene; chat history is not retained. Local inference may take about a minute, especially for the first prompt.
+The Zenith prompt box supports Apply change, Stop, and Undo. The scene worker exposes nine studio functions; the flow worker exposes five flow functions, uses a dedicated `.hermes-home`, and blocks non-loopback network connections. It does not use your hosted model credentials. Each prompt reads the current scene; chat history is not retained. Local inference may take about a minute, especially for the first prompt.
 
 ## Studio Designer profile
 
-Both connections load the same maintained identity and four skills: scene composition, geometry and paths, animal motion, and reproducibility/review. Scene composition and review load every turn; the other skills load for matching briefs. Open **Studio Designer · profile & skills** in either prompt panel to inspect the role, skills and current provider’s tools. The profile uses the saved scene, without cross-turn chat memory.
+Both connections load the same maintained identity and five skills: scene composition, geometry and paths, animal motion, reproducibility/review, and functional flows. Scene composition and review load for scene turns; flow turns load the flow skill. The other skills load for matching scene briefs. Open **Studio Designer · profile & skills** in either prompt panel to inspect the role, skills and current provider’s tools. The profile uses the saved scene or flow, without cross-turn chat memory.
 
 See [the profile, skill routing and tool boundary](docs/studio-designer.md). Animal references can inform a plan; their procedural source is not editable through scene recipes.
 
@@ -87,9 +87,15 @@ npm run dev
 
 Use `npm run dev:agent` instead to run both Codex and on-device Hermes. The connection command checks Codex sign-in and stores only its executable path and optional model choice in private `.runtime/codex.json`; it does not copy credentials or alter your Codex configuration. Add `-- --binary /absolute/path/to/codex` if it is not on PATH. An optional `-- --model MODEL_ID` selects a model you already have access to; otherwise the CLI default is used.
 
-Selecting Codex sends the prompt and current built scene to your signed-in Codex account. It proposes a complete scene in a bounded, ephemeral CLI run. The local bridge validates that scene and applies it atomically only if its starting revision is still current. Codex can use four read-only studio MCP tools for scene reads, directive compilation, library lookup and analytic audits. Its model gets no bridge token; the private MCP adapter reads that credential locally. The run disables shell, browser, apps, plugins and hooks and uses a read-only sandbox. Failed, cancelled or stale proposals do not mutate the scene. Undo rejects intervening edits after a Codex change. Both designers share one job slot so they cannot edit simultaneously.
+Selecting Codex sends the prompt and current built scene (or current flow on `/flow`) to your signed-in Codex account. It proposes a complete scene in a bounded, ephemeral CLI run. The local bridge validates that scene and applies it atomically only if its starting revision is still current. Codex can use four read-only studio MCP tools for scene reads, directive compilation, library lookup and analytic audits. Its model gets no bridge token; the private MCP adapter reads that credential locally. The run disables shell, browser, apps, plugins and hooks and uses a read-only sandbox. Failed, cancelled or stale proposals do not mutate the scene. Undo rejects intervening edits after a Codex change. Both designers share one job slot so they cannot edit simultaneously.
 
 Requests without a `provider` still use Hermes, preserving older clients. The on-device Hermes worker remains loopback-only. The v2 recipe format and animal components are unchanged. See [Codex connection and request contract](docs/codex-connection.md).
+
+## Component interfaces and flow design
+
+[Glyph Flow](http://127.0.0.1:8788/flow) now supports programmer-owned named methods and typed results, such as `source.api.add(record)`. Components own state, handlers, contracts, native HTML and visual organizers. The shared transport animates method input and commits on arrival. Programmer subclasses and custom pure handlers work through the same API.
+
+The flow page includes a method console, a JSON flow editor, and prompt editing with Hermes or Codex. Designers can create/edit components, interfaces, contracts, layouts and connections using registered strategies, or queue animated method calls. Flow edits are staged and revision-checked; a call is delivered only after browser receipt. The saved scene remains separate. See [interfaces, protocol, document format and boundaries](docs/functional-components.md).
 
 ## Scene model
 
