@@ -85,7 +85,7 @@ function createBridge(options={}){
    if(url.pathname.startsWith('/api/')){
     const actual=req.headers.authorization||'',expected='Bearer '+token;
     if(actual.length!==expected.length||!crypto.timingSafeEqual(Buffer.from(actual),Buffer.from(expected)))throw fault(401,'unauthorized','A bridge credential is required');
-    if(req.method==='GET'&&url.pathname==='/api/programs')return send(res,200,programs.read());
+    if(req.method==='GET'&&url.pathname==='/api/programs')return send(res,200,programs.poll(url.searchParams.get('revision'),url.searchParams.get('draft_revision')));
     if(req.method==='GET'&&url.pathname==='/api/presets')return send(res,200,presets.poll(url.searchParams.get('revision'),url.searchParams.get('draft_revision')));
     if(req.method==='GET'&&url.pathname==='/api/voice')return send(res,200,voice.status());
     if(req.method==='POST'&&url.pathname==='/api/voice'){if(!['audio/webm','audio/mp4','audio/ogg','audio/wav','audio/x-wav'].includes(String(req.headers['content-type']||'').split(';')[0]))throw fault(415,'content_type','Send a supported audio recording.');let size=0,chunks=[];for await(const chunk of req){size+=chunk.length;if(size>10000000)throw fault(413,'too_large','Recording exceeds 10 MB.');chunks.push(chunk);}return send(res,200,await voice.transcribe(Buffer.concat(chunks)));}

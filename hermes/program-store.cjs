@@ -8,6 +8,7 @@ class ProgramStore{
  constructor(directory){this.file=path.join(directory,'programs.json');this.state=fs.existsSync(this.file)?JSON.parse(fs.readFileSync(this.file,'utf8')):{version:1,revision:0,presets:[],draft:{revision:0,source:fs.readFileSync(path.join(__dirname,'../dist/program-seed.js'),'utf8')}};if(this.state.version!==1||!Number.isSafeInteger(this.state.revision)||!Array.isArray(this.state.presets)||!Number.isSafeInteger(this.state.draft?.revision))throw Error('Invalid program store');text(this.state.draft.source);for(const p of this.state.presets)this.validatePreset(p);}
  read(){return {ok:true,...structuredClone(this.state)};}
  draft(){return structuredClone(this.state.draft);}
+ poll(revision,draftRevision){return String(this.state.revision)===revision&&String(this.state.draft.revision)===draftRevision?{ok:true,unchanged:true}:this.read();}
  summary(){return this.state.presets.map(({source,...p})=>({...p,bytes:Buffer.byteLength(source)}));}
  persist(next){fs.writeFileSync(this.file+'.tmp',JSON.stringify(next,null,2),{mode:0o600});fs.renameSync(this.file+'.tmp',this.file);this.state=next;return this.read();}
  commit(source,revision,checkSyntax=false){text(source);if(checkSyntax)validate(source);if(revision!==this.state.draft.revision)fail(409,'The program draft changed. Read the latest source before applying.');return this.persist({...this.state,draft:{revision:revision+1,source}}).draft;}

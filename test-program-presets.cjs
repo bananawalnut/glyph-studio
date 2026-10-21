@@ -11,6 +11,7 @@ try{
  assert.throws(()=>store.save({preset,expected_revision:0,expected_draft_revision:0}),/changed/);
  assert.throws(()=>store.save({preset:{...preset,source},expected_revision:0,expected_draft_revision:1}),/changed/);
  store.save({preset,expected_revision:0,expected_draft_revision:1});assert.equal(store.summary()[0].kind,'program');
+ assert.equal(store.poll('1','1').unchanged,true);assert.equal(store.poll('0','1').presets.length,1);
  const reopened=new ProgramStore(dir);assert.deepEqual(reopened.read(),store.read());assert.equal(fs.statSync(store.file).mode&0o777,0o600);
  reopened.save({preset:{...preset,name:'Edited'},expected_revision:1,expected_draft_revision:1});assert.equal(reopened.read().presets.length,1);
  console.log('PASS source parsed without host execution, invalid syntax/budget, exact draft save, stale conflicts, private persistence and preset update');
