@@ -6,5 +6,9 @@
   "glyph-core.wasm": {
     "bytes": 3323,
     "gzip_bytes": 1564
+  },
+  "glyph-flow.js": {
+    "bytes": 20329,
+    "gzip_bytes": 6983
   }
 }

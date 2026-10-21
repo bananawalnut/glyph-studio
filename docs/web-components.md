@@ -72,6 +72,10 @@ The browser benchmark compares the original Canvas renderer with WebGL2 at fixed
 
 The same page checks every preset, GPU pixel output, exact full-loop closure, context recovery, Canvas fallback, native HTML button activation, anchor movement, paused frames, disconnect/reconnect and browser Wasm parity. `npm test` checks 34,670 sampled points across the original engine, JavaScript template compiler and Rust/Wasm compiler, including all shapes/patterns and maximum counts.
 
+## Functional content and handoffs
+
+An optional `glyph-flow.js` module adds `<glyph-flow>` and `<glyph-node>` for structured content, receiving contracts, functional reducers/organizers and animated local transfers. It is separate from the scene player. Open `/flow` or read [the component/transfer API](functional-components.md).
+
 ## Current scope
 
 This is a component foundation: one scene element, real HTML overlays and anchored content. It does not yet include a complete widget/design-system library, arbitrary mesh imports, graph topology algorithms, DOM surface warping, a WebGPU backend, or an npm registry release.

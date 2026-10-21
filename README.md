@@ -2,6 +2,16 @@
 
 A local tool for reproducible 3D glyph animations. Compose sparse shells, text signals, flickering glyphs and cubic Bézier ribbons, with independent geometry and motion. The included Zenith / Open Consultancy scene uses a dim cross sphere and a thin cyan text ring rotating in opposite directions.
 
+## Work tracking
+
+DevGraph is the canonical tracker: **Front-end tools and component libraries** (`frontend-tools-components`) → **Glyph component library** (`glyph-component-library`) → **Functional content components and responsive handoffs** (`glyph-functional-handoffs`). Arena placement and a separate ongoing-work kind remain open organizational decisions.
+
+## Functional component handoffs
+
+Open **http://127.0.0.1:8788/flow** after starting the dev server. Glyph Flow adds optional native components that accept structured content, validate input/output contracts, organize content through pure function hooks and animate immutable data copies between components. The receiving component chooses its own structure and commits only after arrival. The demo includes a draggable obstacle, a moving receiver, different signatures and invalid-input rejection.
+
+Use the separate `dist/glyph-flow.js` module; the original player payload and saved scenes stay unchanged. See [the API, delivery semantics and current limits](docs/functional-components.md).
+
 ## Embed it as a Web Component
 
 The default renderer is now WebGL2 with GLSL shaders and a glyph atlas, with Canvas 2D as a fallback. A standalone component attaches normal HTML content and buttons to points in the scene:

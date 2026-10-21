@@ -1,8 +1,8 @@
 {
   "name": "glyph-studio",
-  "version": "0.2.0",
+  "version": "0.3.0",
   "private": true,
-  "description": "Reproducible 3D glyph animations with independent surfaces, signals and on-device Hermes editing.",
+  "description": "Reproducible glyph scenes and functional content components with animated handoffs.",
   "engines": {
     "node": ">=18"
   },
@@ -11,7 +11,7 @@
     "dev": "node hermes/bridge.cjs --port 8788 --preset zenith",
     "dev:agent": "python3 hermes/start.py",
     "build": "python3 build.py",
-    "test": "node test-scene.js && node test-surfaces.js && node test-betta.cjs && node test-life.cjs && node test-player.cjs && node hermes/test-bridge.cjs && node hermes/test-agent-jobs.cjs && node hermes/test-codex.cjs && node hermes/test-designer.cjs && python3 hermes/test-attach.py",
+    "test": "node test-scene.js && node test-surfaces.js && node test-betta.cjs && node test-life.cjs && node test-player.cjs && node test-flow.cjs && node hermes/test-bridge.cjs && node hermes/test-agent-jobs.cjs && node hermes/test-codex.cjs && node hermes/test-designer.cjs && python3 hermes/test-attach.py",
     "build:wasm": "python3 scripts/build-player.py --rust",
     "bench:geometry": "node scripts/bench-geometry.cjs"
   }

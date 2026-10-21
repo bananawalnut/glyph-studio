@@ -31,6 +31,12 @@ html=html.replace('href="components.html"','href="https://github.com/bananawalnu
 html=html.replace('href="agent-guide.txt"','href="data:text/plain;charset=utf-8,'+quote((dist/'agent-guide.txt').read_text())+'"').replace('href="./"','href="Glyph%20Studio.html"')
 html=html.replace('href="betta.html"','href="Betta%20-%20Glyph%20Study.html"').replace('href="life.html"','href="Anima%20-%20Living%20Glyph%20Studies.html"')
 (root/'Glyph Studio.html').write_text(html)
+flow=(dist/'flow.html').read_text().replace('<link rel="stylesheet" href="flow.css">','<style>'+(dist/'flow.css').read_text()+'</style>')
+for name in ['glyph-flow.js','flow-demo.js']:
+    flow=flow.replace('<script defer src="'+name+'"></script>','')
+flow=flow.replace('</body>',''.join('<script>'+(dist/name).read_text()+'</script>' for name in ['glyph-flow.js','flow-demo.js'])+'</body>')
+flow=flow.replace('href="/"','href="Glyph%20Studio.html"').replace('href="components.html"','href="https://github.com/bananawalnut/glyph-studio/blob/main/docs/functional-components.md"')
+(root/'Glyph Flow - Components.html').write_text(flow)
 betta=(dist/'betta.html').read_text()
 for name in ['betta-geometry.js','betta.js']:
     betta=betta.replace('<script defer src="'+name+'"></script>','<script>'+(dist/name).read_text()+'</script>')
@@ -49,7 +55,7 @@ def public(file):
     return file.is_file() and not any(x in file.parts for x in ('__pycache__','.runtime','.hermes-home','.openai','target')) and file.suffix!='.pyc' and file.name!='connection.path'
 source=[site/'README.md',site/'package.json',site/'.gitignore',site/'build.py',site/'.cargo/config.toml',*sorted(site.glob('test-*.js')),*sorted(site.glob('test-*.cjs')),*sorted(dist.rglob('*')),*sorted(hermes.rglob('*')),*sorted((site/'player').rglob('*')),*sorted((site/'scripts').rglob('*')),*sorted((site/'rust').rglob('*')),*sorted((site/'docs').rglob('*'))]
 with zipfile.ZipFile(root/'glyph-studio.zip','w',zipfile.ZIP_DEFLATED) as archive:
-    for file in [root/'Glyph Studio.html',root/'Zenith Open Consultancy.html',root/'Betta - Glyph Study.html',root/'Anima - Living Glyph Studies.html',root/'zenith-open-consultancy.scene.json',root/'Glyph Studio - Read me.txt']:
+    for file in [root/'Glyph Studio.html',root/'Glyph Flow - Components.html',root/'Zenith Open Consultancy.html',root/'Betta - Glyph Study.html',root/'Anima - Living Glyph Studies.html',root/'zenith-open-consultancy.scene.json',root/'Glyph Studio - Read me.txt']:
         archive.write(file,file.name)
     for file in source:
         if public(file): archive.write(file,Path('glyph-studio')/file.relative_to(site))
