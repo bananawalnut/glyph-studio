@@ -163,3 +163,10 @@ npm run connect:voice -- --python /absolute/path/to/venv/bin/python --model /abs
 ```
 
 `ffmpeg` must be installed (`--ffmpeg /absolute/path/to/ffmpeg` overrides detection). Setup downloads nothing. Microphone permission belongs to your browser. Audio is temporary and removed after processing. Your selected designer provider receives text only when you submit. Dictation runs in the local dev server; standalone HTML previews remain offline without agent or recording services.
+
+
+### Programmable math and component logic
+
+Open [Math & logic lab](http://127.0.0.1:8788/math) for code-defined surfaces, mapped paths, independent composites and a typed component that deforms geometry on receipt. The optional `glyph-program.js` API accepts ordinary functions, analytic/numeric derivatives, nested mat4 transforms, deformations and direct typed-buffer writers. Component interfaces own their methods, handlers, organizers and custom transition callbacks. Registered behaviors can declare typed `params` rather than only use predefined setting names.
+
+Read [the programmer API](docs/programmable-geometry.md) and [authored examples](dist/math-examples.js). These are application modules a coding agent can edit and test. Existing scene/preset JSON stays compatible; it does not serialize or execute function bodies. CPU math sampling feeds the existing WebGL2 instancing pipeline, with Canvas fallback. Custom Wasm writers can fill the buffer ABI; arbitrary JS is not automatically compiled into Wasm/GLSL.

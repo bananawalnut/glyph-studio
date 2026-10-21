@@ -34,3 +34,10 @@ At this snapshot, the dependency-free player is 29,938 raw bytes / 10,811 gzip b
 - The component demo's native HTML button was activated through browser UI; the existing Zenith tool renders with the new backend and retains its local Hermes prompt connection.
 
 Reproduce using `npm test`, `npm run bench:geometry`, and the two buttons at `/benchmark.html`.
+
+
+## Code-defined programs (v0.10.0)
+
+An optional `glyph-program.js` module adds arbitrary CPU evaluators and direct typed-buffer writers. The integration adds a small point-buffer hook to the base player and custom transition/strategy support to optional flow. Raw/gzip sizes are recorded in `dist/player-sizes.json`; presets still load without the program module.
+
+A local Node sampling check of the 1,950-point harmonic example (120 phases, same process, no explicit warm-up) measured p50 0.747 ms and p95 1.091 ms. This measures CPU sampling only, on this machine during development; it includes JS allocation/validation and excludes upload, GPU, browser layout/compositing and any FPS claim. Re-run your actual authored functions and resolutions. The browser fixture verifies that stable-dimension frame updates reuse GPU buffers and the glyph atlas; visual output, Canvas fallback, context recovery and typed receiving behavior are tested separately.

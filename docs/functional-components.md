@@ -214,3 +214,10 @@ The bridge ledger persists up to 128 invocation IDs, while each browser flow has
 `node test-flow.cjs` and `node test-flow-model.cjs` check producer/consumer contracts, immutable state, invalid input/schema rejection and reproducible navigation with moving targets. `hermes/test-flow-agent.cjs` exercises staged proposals, persistent call receipts, cancellation, stale edits, both provider paths and safe undo with mocked inference. The native plugin test uses the actual Hermes loader and flow dispatch. `/flow-check.html` executes real-browser lifecycle tests, including atomic arrival, idempotency, cancellation, definition changes, domain rejection, removal, blocked-route timeout, capacity, reduced-motion behavior, programmer-defined method results, `api.remove` and a custom element subclass. Existing engine, Wasm, studio and both designer suites remain in `npm test`.
 
 The addition leaves saved recipes and player consumers unchanged. No scene migration or new runtime dependency is required. `dist/player-sizes.json` records both player and optional flow byte/gzip sizes. The source ZIP and standalone **Glyph Flow - Components.html** contain the demo and library. Browser tests are component evidence, not formal proof or a cross-device performance qualification.
+
+
+## Arbitrary transition math and typed strategy parameters
+
+Code-defined `motion:{type:'custom',duration:1.8,sample:(from,to,{progress,seed})=>({x,y,z})}` lets an organizer choose its own geometry transition function. It retains immutable mark metadata and exact endpoints; invalid samples settle to the target and emit a flow error. This callback is application code, not a saved JSON field.
+
+`registry.register(kind,id,factory,description,paramsContract)` optionally exposes typed `spec.params` to a registered handler/layout/export factory. Its parameter schema appears in the catalog. Existing strategies keep their setting fields and reject undeclared params. Match browser/server registrations when using persisted documents. See [parametric geometry and behavior](programmable-geometry.md) for the integrated example.

@@ -14,6 +14,7 @@ const ANIMALS={
  'betta':{name:'Betta',motion:'Restrained body wave and independently delayed long-fin membranes; membrane lag is art directed.',source:'https://pubmed.ncbi.nlm.nih.gov/34853171/'}
 };
 function library(args={}){const kind=args.kind||'profile',id=args.id;if(id!==undefined&&typeof id!=='string')throw Error('id must be a string');
+ if(kind==='program')return {programmerAPI:fs.readFileSync(path.join(__dirname,'..','docs','programmable-geometry.md'),'utf8'),exampleSource:fs.readFileSync(path.join(__dirname,'..','dist','math-examples.js'),'utf8'),editor:'/math',execution:'Application module code, authored in the repository. The restricted prompt adapter does not execute source strings.'};
  if(kind==='design-system')return {designSystem:DS.catalog()};
  if(['object','motion','material','behavior'].includes(kind)){if(!id)return {[kind+'s']:DS.catalog()[{object:'objects',motion:'motions',material:'materials',behavior:'behaviors'}[kind]]};const entry=DS.preset(kind,id);return {preset:entry,...(kind==='object'?{scene:DS.scene({object:id}),options:['object','motions','material','color','text','seed','duration','id']}:{}),applied:false};}
  if(kind==='profile')return {profile:profile()};

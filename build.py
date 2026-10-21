@@ -57,6 +57,17 @@ for name in ['scene.js','glyph-player.js','glyph-design.js','presets.js','preset
 workshop=workshop.replace('</body>',''.join('<script>'+(dist/name).read_text()+'</script>' for name in ['scene.js','glyph-player.js','glyph-design.js','presets.js','preset-designer.js','agent-panel.js'])+'</body>')
 workshop=workshop.replace('href="/"','href="Glyph%20Studio.html"').replace('href="/flow"','href="Glyph%20Flow%20-%20Components.html"').replace('href="/design"','href="Glyph%20-%20Design%20System.html"')
 (root/'Glyph - Preset Workshop.html').write_text(workshop)
+mathlab=(dist/'math-lab.html').read_text()
+for name in ['design-tokens.css','math-lab.css']:
+    mathlab=mathlab.replace('<link rel="stylesheet" href="'+name+'">','<style>'+(dist/name).read_text()+'</style>')
+for name in ['glyph-player.js','glyph-program.js','glyph-flow.js','math-examples.js','math-lab.js']:
+    mathlab=mathlab.replace('<script defer src="'+name+'"></script>','')
+mathlab=mathlab.replace('</body>',''.join('<script>'+(dist/name).read_text()+'</script>' for name in ['glyph-player.js','glyph-program.js','glyph-flow.js','math-examples.js','math-lab.js'])+'</body>')
+mathlab=mathlab.replace('href="/"','href="Glyph%20Studio.html"').replace('href="/flow"','href="Glyph%20Flow%20-%20Components.html"').replace('href="/design"','href="Glyph%20-%20Design%20System.html"').replace('href="/presets"','href="Glyph%20-%20Preset%20Workshop.html"').replace('href="math-examples.js"','href="https://github.com/bananawalnut/glyph-studio/blob/main/dist/math-examples.js"')
+(root/'Glyph - Math Lab.html').write_text(mathlab)
+for name in ['Glyph Studio.html','Glyph Flow - Components.html','Glyph - Design System.html','Glyph - Preset Workshop.html']:
+    file=root/name
+    file.write_text(file.read_text().replace('href="/math"','href="Glyph%20-%20Math%20Lab.html"'))
 betta=(dist/'betta.html').read_text()
 for name in ['betta-geometry.js','betta.js']:
     betta=betta.replace('<script defer src="'+name+'"></script>','<script>'+(dist/name).read_text()+'</script>')
@@ -75,7 +86,7 @@ def public(file):
     return file.is_file() and not any(x in file.parts for x in ('__pycache__','.runtime','.hermes-home','.openai','target')) and file.suffix!='.pyc' and file.name!='connection.path'
 source=[site/'README.md',site/'package.json',site/'.gitignore',site/'build.py',site/'.cargo/config.toml',*sorted(site.glob('test-*.js')),*sorted(site.glob('test-*.cjs')),*sorted(dist.rglob('*')),*sorted(hermes.rglob('*')),*sorted((site/'player').rglob('*')),*sorted((site/'scripts').rglob('*')),*sorted((site/'rust').rglob('*')),*sorted((site/'docs').rglob('*'))]
 with zipfile.ZipFile(root/'glyph-studio.zip','w',zipfile.ZIP_DEFLATED) as archive:
-    for file in [root/'Glyph Studio.html',root/'Glyph - Preset Workshop.html',root/'Glyph - Design System.html',root/'Glyph Flow - Components.html',root/'Zenith Open Consultancy.html',root/'Betta - Glyph Study.html',root/'Anima - Living Glyph Studies.html',root/'zenith-open-consultancy.scene.json',root/'Glyph Studio - Read me.txt']:
+    for file in [root/'Glyph Studio.html',root/'Glyph - Math Lab.html',root/'Glyph - Preset Workshop.html',root/'Glyph - Design System.html',root/'Glyph Flow - Components.html',root/'Zenith Open Consultancy.html',root/'Betta - Glyph Study.html',root/'Anima - Living Glyph Studies.html',root/'zenith-open-consultancy.scene.json',root/'Glyph Studio - Read me.txt']:
         archive.write(file,file.name)
     for file in source:
         if public(file): archive.write(file,Path('glyph-studio')/file.relative_to(site))

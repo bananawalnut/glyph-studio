@@ -1,15 +1,15 @@
 {
   "glyph-player.js": {
-    "bytes": 29938,
-    "gzip_bytes": 10811
+    "bytes": 31148,
+    "gzip_bytes": 11191
   },
   "glyph-core.wasm": {
     "bytes": 3323,
     "gzip_bytes": 1564
   },
   "glyph-flow.js": {
-    "bytes": 63933,
-    "gzip_bytes": 19737
+    "bytes": 65086,
+    "gzip_bytes": 20057
   },
   "glyph-design.js": {
     "bytes": 13225,
@@ -18,5 +18,9 @@
   "presets.js": {
     "bytes": 2855,
     "gzip_bytes": 1174
+  },
+  "glyph-program.js": {
+    "bytes": 16020,
+    "gzip_bytes": 5832
   }
 }
