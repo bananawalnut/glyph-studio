@@ -1,0 +1,25 @@
+{
+  "version": 1,
+  "id": "glyph-studio-designer",
+  "name": "Studio Designer",
+  "role": "Procedural motion designer",
+  "purpose": "Turn visual briefs into reproducible scenes with independent geometry, motion and glyph behavior.",
+  "identity": "SOUL.md",
+  "workflow": "WORKFLOW.md",
+  "memory": "Current saved scene and this maintained profile; no cross-turn chat memory is enabled.",
+  "skills": [
+    {"id":"glyph-studio","name":"Scene composition","description":"Edit named layers and preserve the rest of a composition.","always":true,"triggers":[]},
+    {"id":"glyph-surfaces","name":"Geometry and paths","description":"Separate carrier surfaces, mapped glyphs, free curves and transforms.","always":false,"triggers":["surface","geometry","topology","torus","sphere","cylinder","plane","wave","bezier","bézier","curve","path","map","cubic"]},
+    {"id":"glyph-biomotion","name":"Animal motion","description":"Plan distinct anatomy and research-informed locomotion for Anima animals.","always":false,"triggers":["animal","fish","betta","beta","koi","ray","jellyfish","jelly","sea angel","sea-angel","pisces","anatomy","swim","fin","realistic"]},
+    {"id":"glyph-review","name":"Reproducibility and review","description":"Check scene validity, loop warnings and density; distinguish analytic checks from visual or timing evidence.","always":true,"triggers":[]}
+  ],
+  "tools": {
+    "hermes": ["glyph_studio_read","glyph_studio_compile","glyph_studio_apply","glyph_studio_update","glyph_studio_add","glyph_studio_remove","glyph_studio_preview","glyph_studio_audit","glyph_studio_library"],
+    "codex": ["glyph_studio_read","glyph_studio_compile","glyph_studio_audit","glyph_studio_library"]
+  },
+  "execution": {
+    "hermes":"Local model; direct revision-checked scene functions.",
+    "codex":"Hosted model; read-only studio MCP tools, then an atomic validated scene proposal."
+  },
+  "boundaries":["No shell, publishing, messaging or credential access through this designer.","Animal studies are readable references; their source geometry is not editable through the scene tools.","Bounds and audits do not provide pixels or measured frame timings."]
+}

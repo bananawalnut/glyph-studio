@@ -32,7 +32,7 @@ if not python:
     python=Path(first[2:])
 directory=ROOT.parent/'.runtime';directory.mkdir(mode=0o700,exist_ok=True);os.chmod(directory,0o700)
 home=ROOT.parent/'.hermes-home'
-subprocess.run([str(python),str(ROOT/'attach.py'),'--home',str(home),'--connection',str(directory/'connection.json'),'--replace'],check=True)
+subprocess.run([str(python),str(ROOT/'attach.py'),'--home',str(home),'--connection',str(directory/'connection.json'),'--replace','--designer-profile'],check=True)
 settings={'model':args.model,'model_label':args.model_label,'provider':'custom','python':str(python),'home':str(home),'base_url':args.base_url}
 file=directory/'agent.json';file.write_text(json.dumps(settings,indent=2));os.chmod(file,0o600)
 # Dedicated home contains no copied provider credentials, global memories or plugins.

@@ -23,6 +23,8 @@ DEFINITION['properties']['id']=deepcopy(OBJECT['properties']['id'])
 DEFINITION['required']=['id']
 
 TOOLS=[
+ tool('glyph_studio_audit','Read-only validation, loop warnings, sample counts and host dependencies for the saved recipe or candidate recipe_json. Does not render pixels, measure FPS or mutate the scene.',{'recipe_json':{'type':'string','maxLength':100000}}),
+ tool('glyph_studio_library','Read the studio designer profile, a focused skill, available scene presets or Anima animal references. Omit id for a catalog. Presets are candidates, not applied edits; animal source geometry is not editable here.',{'kind':{'type':'string','enum':['profile','skill','preset','animal']},'id':{'type':'string','maxLength':100}},['kind']),
  tool('glyph_studio_read','Read the current local Glyph Studio recipe, scene revision, preview state and loop warnings.',{}),
  tool('glyph_studio_compile','Compile scene directives into a validated candidate recipe. Read-only: does not change the scene.',{'directives':{'type':'string','maxLength':100000}},['directives']),
  tool('glyph_studio_apply','Replace the local scene with a complete validated recipe. Requires the current scene revision; stale writes are rejected.',{'scene':SCENE,'expected_revision':REV},['scene','expected_revision']),

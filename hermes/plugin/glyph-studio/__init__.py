@@ -10,3 +10,6 @@ def register(ctx):
             return json.dumps(call(_name,args))
         ctx.register_tool(name=schema['name'],toolset='glyph_studio',schema=schema,handler=handler,description=schema['description'])
     ctx.register_skill('design',Path(__file__).parent/'skills'/'glyph-studio'/'SKILL.md',description='Compose independent surfaces, glyph layers and motion in Glyph Studio.')
+
+    for name in ["glyph-surfaces","glyph-biomotion","glyph-review"]:
+        ctx.register_skill(name,Path(__file__).parent/"skills"/name/"SKILL.md",description=name.replace("glyph-", "Studio ").replace("-"," "))

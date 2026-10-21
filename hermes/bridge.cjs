@@ -1,7 +1,7 @@
 'use strict';
 // Local scene service. Same rendering/validation engine as the browser.
 const http=require('node:http'),fs=require('node:fs'),path=require('node:path'),crypto=require('node:crypto');
-const E=require('../dist/scene.js');
+const E=require('../dist/scene.js'),D=require('./designer.cjs');
 const {createAgentJobs}=require('./agent-jobs.cjs');
 const clone=value=>structuredClone(value);
 function fault(status,code,message,extra={}){return Object.assign(new Error(message),{status,code,...extra});}
@@ -27,6 +27,8 @@ function createBridge(options={}){
  function commit(scene,args){expect(args);try{E.validate(scene);}catch(e){throw fault(400,'invalid_scene',e.message);}const next={scene:clone(scene),revision:state.revision+1};atomic(stateFile,next);viewStartedAt=Date.now();state={...next,view:{...state.view,frame:0,revision:state.view.revision+1}};return {ok:true,...snapshot()};}
  function call(name,args={}){
   if(!plain(args))throw fault(400,'invalid_arguments','Arguments must be an object');
+  if(name==='glyph_studio_library'){try{return {ok:true,...D.library(args)};}catch(e){throw fault(400,'invalid_library_request',e.message);}}
+  if(name==='glyph_studio_audit'){let candidate=state.scene;if(args.recipe_json!==undefined){if(typeof args.recipe_json!=='string'||args.recipe_json.length>100000)throw fault(400,'invalid_arguments','recipe_json must be JSON text under 100000 characters');try{candidate=JSON.parse(args.recipe_json);}catch{throw fault(400,'invalid_json','Invalid candidate recipe JSON');}}return {ok:true,...D.audit(candidate,args.recipe_json===undefined?state.revision:null)};}
   if(name==='glyph_studio_read')return {ok:true,...snapshot()};
   if(name==='glyph_studio_compile'){
    if(typeof args.directives!=='string'||args.directives.length>100000)throw fault(400,'invalid_arguments','Supply directives as text, at most 100000 characters');

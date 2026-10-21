@@ -57,7 +57,7 @@ def call(name, arguments=None):
 
 def main():
     parser=argparse.ArgumentParser(description='Call Glyph Studio functions without the Hermes plugin. Arguments are read as JSON from stdin.')
-    parser.add_argument('tool', choices=['glyph_studio_read','glyph_studio_compile','glyph_studio_apply','glyph_studio_update','glyph_studio_add','glyph_studio_remove','glyph_studio_preview'])
+    parser.add_argument('tool', choices=['glyph_studio_read','glyph_studio_compile','glyph_studio_apply','glyph_studio_update','glyph_studio_add','glyph_studio_remove','glyph_studio_preview','glyph_studio_audit','glyph_studio_library'])
     args=parser.parse_args()
     try:
         data=json.load(sys.stdin) if not sys.stdin.isatty() else {}

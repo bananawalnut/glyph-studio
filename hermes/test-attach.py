@@ -35,4 +35,24 @@ with tempfile.TemporaryDirectory(prefix='glyph-attach-') as temporary:
     assert updated['model']==config['model']
     assert 'another-plugin' in updated['plugins']['enabled']
     assert list((home/'.glyph-studio-backups').rglob('config.yaml'))
-print('PASS dry-run, explicit-home installation, discoverable skill, config preservation, owned replacement and backups')
+    assert not (home/'SOUL.md').exists()
+    (home/'SOUL.md').write_text('Preserve this identity in a backup')
+    attach.prepare(home,connection,replace=True,designer_profile=True)
+    assert (home/'SOUL.md').read_text()==(attach.ROOT/'plugin/glyph-studio/designer/SOUL.md').read_text()
+    assert json.loads((home/'studio-designer.json').read_text())['id']=='glyph-studio-designer'
+    assert any(p.read_text()=='Preserve this identity in a backup' for p in (home/'.glyph-studio-backups').rglob('SOUL.md'))
+    for skill in ['glyph-surfaces','glyph-biomotion','glyph-review']:
+        assert (home/'skills/creative'/skill/'SKILL.md').is_file()
+    outside=Path(temporary)/'outside';outside.write_text('untouched')
+    for name in ['SOUL.md','studio-designer.json']:
+        target=home/name;previous=target.read_text();target.unlink();target.symlink_to(outside)
+        before=(home/'config.yaml').read_text()
+        try:
+            attach.prepare(home,connection,replace=True,designer_profile=True)
+            raise AssertionError('Identity symlinks must be rejected before installation')
+        except ValueError:
+            pass
+        assert outside.read_text()=='untouched'
+        assert (home/'config.yaml').read_text()==before
+        target.unlink();target.write_text(previous)
+print('PASS dry-run, explicit-home installation, discoverable skill, config preservation, four skills, opt-in identity/backup and symlink rejection')

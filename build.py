@@ -14,6 +14,7 @@ site=Path(__file__).resolve().parent
 root=(args.output or site/'releases').expanduser().resolve()
 root.mkdir(parents=True,exist_ok=True)
 subprocess.run([sys.executable,str(site/'scripts/build-player.py')],check=True)
+subprocess.run([sys.executable,str(site/'scripts/export-agent-tools.py')],check=True)
 dist=site/'dist'
 hermes=site/'hermes'
 skill=hermes/'plugin'/'glyph-studio'/'skills'/'glyph-studio'

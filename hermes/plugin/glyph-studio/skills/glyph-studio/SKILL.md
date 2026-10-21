@@ -22,15 +22,21 @@ Read [the scene contract](references/scene-contract.txt) for parameters, UV mapp
 
 ## Use the functions
 
+Use `glyph_studio_library` to inspect the maintained profile, a skill, or an existing preset before inventing recipe fields. The two providers share these instructions but have different execution tools.
+
+For Local Hermes:
+
 1. Read with `glyph_studio_read`; retain `revision`.
 2. For a small change, call `glyph_studio_update` with the target kind/id, a minimal `changes` object and `expected_revision`. Arrays replace whole arrays. For new elements, use `glyph_studio_add` with a partial definition; renderer defaults supply omitted fields.
 3. For a new composition, compile directives with `glyph_studio_compile`, inspect errors/warnings, then send its returned `scene` to `glyph_studio_apply` with the current revision.
 4. Select a frame with `glyph_studio_preview`. It returns geometry bounds, not pixels. Inspect the browser when visual judgment is required; do not claim a visual review from bounds alone.
-5. Read again to verify the requested state. Report changed objects, any loop-seam warnings and whether visual inspection occurred.
+5. Read again and use `glyph_studio_audit` to verify the requested state. Report changed objects, any loop-seam warnings and whether visual inspection occurred.
+
+For Codex, use the read-only `glyph_studio_read`, `glyph_studio_compile`, `glyph_studio_library` and `glyph_studio_audit` MCP tools. Return the complete scene proposal through the structured response; the bridge checks and applies it once. Mutation and playback tools are unavailable in this connection.
 
 A `revision_conflict` means the user or another client edited the scene. Re-read and reconcile the requested change; do not repeatedly resend a whole stale recipe. Validation failures leave the scene untouched.
 
-If native functions are unavailable, use the bundled helper with the same function names and JSON arguments on stdin:
+For a separately attached Hermes agent with terminal access, the bundled helper accepts the same function names and JSON arguments on stdin:
 
 ```bash
 printf '{}' | python3 scripts/client.py glyph_studio_read

@@ -1,6 +1,6 @@
 # Glyph Studio for Hermes
 
-This bundle contains a native Hermes plugin, a reusable skill, and a local scene bridge. An agent turns conversational briefs into function calls; the bridge validates changes and updates the browser. The Local Hermes option in the studio and Zenith prompt panels uses an on-device model through a dedicated Hermes home. A separate Codex option can use your signed-in Codex CLI. It does not copy credentials or change your active Hermes profile.
+This bundle contains a native Hermes plugin, four reusable skills, and a local scene bridge. An agent turns conversational briefs into function calls; the bridge validates changes and updates the browser. The Local Hermes option in the studio and Zenith prompt panels uses an on-device model through a dedicated Hermes home. A separate Codex option can use your signed-in Codex CLI. It does not copy credentials or change your active Hermes profile.
 
 The native registration and skill interfaces were checked against the installed Hermes **0.20.0** runtime. Development checkout reference: `7e8f50a14176e02b514631b0b04470acaadae32a`. See the [official plugin guide](https://hermes-agent.nousresearch.com/docs/guides/build-a-hermes-plugin).
 
@@ -23,7 +23,7 @@ python3 hermes/start.py --model-file /absolute/model.gguf --model my-local-model
 python3 hermes/start.py --base-url http://127.0.0.1:1234/v1 --model local-model-id --model-label "Local model"
 ```
 
-Use `--python /absolute/hermes/.venv/bin/python` if automatic runtime discovery is unavailable. `--configure-only` prepares the private runtime without starting either service. A server must report the model id supplied by `--model`, and must support tool calling and at least 64K context. The worker permits only loopback sockets; hosted-model fallbacks are blocked. Prompts and scene data stay on-device. The dedicated agent exposes exactly the seven Glyph Studio functions and skips global project instructions and memory.
+Use `--python /absolute/hermes/.venv/bin/python` if automatic runtime discovery is unavailable. `--configure-only` prepares the private runtime without starting either service. A server must report the model id supplied by `--model`, and must support tool calling and at least 64K context. The worker permits only loopback sockets; hosted-model fallbacks are blocked. Prompts and scene data stay on-device. The dedicated agent exposes exactly nine Glyph Studio functions and skips global project instructions and memory.
 
 The worker reads the current scene afresh for each prompt. It does not retain chat history; use named layers or explicit requests when referring to earlier edits. Prompt replies describe state verified with scene functions, not a visual screenshot review.
 
@@ -56,7 +56,9 @@ python3 hermes/attach.py --home /absolute/hermes/home --connection /absolute/gly
 python3 hermes/attach.py --home /absolute/hermes/home --connection /absolute/glyph-studio/.runtime/connection.json
 ```
 
-The helper installs `plugins/glyph-studio`, a discoverable `skills/creative/glyph-studio` skill, enables the plugin, and adds the `glyph_studio` toolset to CLI without replacing its other toolsets. It backs up existing config and refuses to overwrite an unrelated installation. Use `--replace` to update a prior installation owned by this bundle.
+The helper installs `plugins/glyph-studio`, four discoverable skills under `skills/creative/`, enables the plugin, and adds the `glyph_studio` toolset to CLI without replacing its other toolsets. It backs up existing config and refuses to overwrite an unrelated installation. Use `--replace` to update a prior installation owned by this bundle.
+
+`--designer-profile` additionally installs the maintained Studio Designer identity into that exact home and backs up existing `SOUL.md` and `studio-designer.json`. It does not switch Hermes’ active profile. The dedicated `start.py` home uses this flag automatically. See [profile and skills](../docs/studio-designer.md).
 
 For a configured messaging gateway, add the explicit platform names with repeated `--platform` flags (for example `--platform cli --platform telegram`). Existing platform toolsets are preserved. If a platform has no configuration yet, configure it in Hermes first rather than guessing defaults.
 
@@ -74,6 +76,8 @@ The same launcher accepts other Hermes commands, such as `gateway start`. Restar
 |---|---|
 | `glyph_studio_read` | Recipe, scene revision, frame/playback state, loop warnings |
 | `glyph_studio_compile` | Directives → validated candidate; does not change the scene |
+| `glyph_studio_library` | Maintained profile, skill instructions, preset candidates and animal references |
+| `glyph_studio_audit` | Validate saved/candidate recipe, loop warnings, counts and finite geometry; no mutation |
 | `glyph_studio_apply` | Replace the scene with a validated recipe |
 | `glyph_studio_update` | Merge changes into one named surface or object |
 | `glyph_studio_add` | Add a partial definition using renderer defaults |
@@ -86,7 +90,7 @@ All scene mutations require `expected_revision` from the latest read. Conflicts 
 
 ## Skill and fallback
 
-Load `glyph-studio` through normal skill discovery after installation, or explicitly load the plugin's `glyph-studio:design` skill. Both are packaged from the same source.
+Load `glyph-studio` through normal skill discovery after installation, or explicitly load the plugin's `glyph-studio:design` skill. Both are packaged from the same source. The plugin also registers `glyph-studio:glyph-surfaces`, `glyph-studio:glyph-biomotion` and `glyph-studio:glyph-review`; corresponding folders support normal skill discovery. The dedicated worker injects the maintained identity, workflow and relevant skills automatically.
 
 Without the plugin, the skill can use its dependency-free CLI helper:
 
