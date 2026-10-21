@@ -132,11 +132,33 @@ add: {
 }
 ```
 
-The interaction runs **submit → travel → receive → commit → organize**. `hop` releases letters at staggered times along the routed carrier's position history; small quantized hops and shadows make them feel pixel-like. All letters converge before the receiving phase. `pixel-sort` reassembles them in a small stepped animation at the projected receiving mark, then the handler adds the intact record and the organizer assigns its place. This name refers to visual reassembly; application data remains in its handler-defined order. Other methods can use `stream` and/or `none`. Duration is bounded to 0..3 simulated seconds. textField selects one top-level string field; a string input supplies its own text. Without text configuration, transport keeps its JSON glyph representation.
+The interaction runs **submit → travel → receive → commit → organize**. `hop` releases letters at staggered times along the routed carrier's position history; small quantized hops and shadows make them feel pixel-like. All letters converge before the receiving phase. `pixel-sort` reassembles them in a small stepped animation at the projected receiving mark, then the handler adds the intact record and the organizer assigns its place. This name refers to visual reassembly; application data remains in its handler-defined order. Other methods can use `stream`, `none` or the separate `categorize` receiving effect. Duration is bounded to 0..3 simulated seconds. textField selects one top-level string field; a string input supplies its own text. Without text configuration, transport keeps its JSON glyph representation.
 
 `glyph-transfer` adds an optional `processing` status between `started` and a terminal receipt. `flow.snapshot.flights` exposes `phase`, resolved letters and normalized interaction settings. Receiving state remains unchanged throughout travel and processing. Cancellation, changed receiving definitions and invalid final handler results still reject without a commit. Reduced-motion mode bypasses both animation phases and delay. These are visual lifecycle stages around a synchronous pure handler, not asynchronous background jobs or distributed transactions.
 
 `new GlyphFlow.Document(element,{insetTop:130})` reserves a top rail for programmer-authored controls, projecting percentage boxes into the remaining height. `workspace.load` emits `document`; applications can reattach their own native form after a new graph is loaded. The word form is application HTML, while interaction metadata belongs to the component interface and can also be edited through designer prompts. Existing saved flows omit this optional metadata and retain stream/immediate behavior. Reload open flow pages after upgrading their bundled validator.
+
+## Clickable content and selected transfers
+
+Source field's words are native buttons that follow their projected canvas positions, including rotation and layout morphs. Hover shows a target; Tab plus Enter/Space activates the same word. Scaffold crosses are not interactive. Enable `interactive:true` on a registered layout, or return `interactive:true` on individual organizer marks in application code. At most 64 marks per component can be interactive; buttons are reused between frames and removed when their records disappear. Set the node's `markInteractionDisabled` to disable activation temporarily and `mark-action` to customize the accessible action label.
+
+The component emits `glyph-activate` with `{component, mark, label, position}`. The demo application binds source activations to its existing source-to-cluster connection:
+
+```js
+flow.addEventListener('glyph-activate', event => {
+  if (event.detail.component === 'source') {
+    workspace.run('source-to-cluster', {mark: event.detail.mark})
+      .then(receipt => console.log(receipt.result))
+      .catch(console.error);
+  }
+});
+```
+
+Selected routing requires an array export with unique keys matching the source layout's `key` (default `id`). A `first` mapping passes the selected record; `batch`/`identity` passes a one-item array. The normal batch cursor stays unchanged. The transfer captures that record and uses `fromMark` to start at the word's projected position rather than the component center. Direct programmer calls can also use `source.send('cluster',[row],{method:'add',fromMark:row.id})`. Receiving `textField` resolves against a single-record array so its letters travel rather than the JSON keys.
+
+Category clusters owns a `categorize` receiving animation: letters settle into a stepped row at their proposed category slot, with a progress indicator. Its typed `group` handler then upserts the record by ID into the supplied category. This uses the existing category field; it does not infer a category from a word's meaning. State stays unchanged until processing completes. The source keeps its copy, and selecting an already-filed record does not create a duplicate. The page limits this connection to one pending transfer and exposes its receiving state and final category. Category row spacing compresses as content grows to keep records inside the component.
+
+These capabilities are additive: layouts without interactive marks retain their old appearance and behavior; transfers without `fromMark` retain center origins. The document metadata enables hit targets, while applications own event bindings. Designer prompts can edit interactive layout settings and receiving effects, but cannot install arbitrary event-handling source through a data document.
 
 ## Data documents and the prompt designer
 
