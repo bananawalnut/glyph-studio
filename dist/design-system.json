@@ -1,0 +1,432 @@
+{
+  "version": 1,
+  "objects": [
+    {
+      "id": "sphere",
+      "name": "Shell",
+      "family": "Surface",
+      "symbol": "◌",
+      "description": "A spherical carrier with a quiet lattice of glyphs.",
+      "defaultMotion": "rotate-y",
+      "supportsFlow": false,
+      "supportsText": false
+    },
+    {
+      "id": "torus",
+      "name": "Torus",
+      "family": "Surface",
+      "symbol": "◎",
+      "description": "A ring with an interior: depth on both sides of a continuous surface.",
+      "defaultMotion": "tumble",
+      "supportsFlow": false,
+      "supportsText": false
+    },
+    {
+      "id": "cylinder",
+      "name": "Cylinder",
+      "family": "Surface",
+      "symbol": "⌭",
+      "description": "A cylindrical lattice for wrapping content around a column.",
+      "defaultMotion": "rotate-y",
+      "supportsFlow": false,
+      "supportsText": false
+    },
+    {
+      "id": "plane",
+      "name": "Plane",
+      "family": "Surface",
+      "symbol": "▱",
+      "description": "A flat carrier for a restrained layer of information.",
+      "defaultMotion": "bob",
+      "supportsFlow": false,
+      "supportsText": false
+    },
+    {
+      "id": "wave",
+      "name": "Wave",
+      "family": "Surface",
+      "symbol": "≈",
+      "description": "A rippled surface, useful for terrain and soft topology.",
+      "defaultMotion": "tumble",
+      "supportsFlow": false,
+      "supportsText": false
+    },
+    {
+      "id": "signal-ring",
+      "name": "Signal ring",
+      "family": "Path",
+      "symbol": "◯",
+      "description": "A text band bound to a sphere. Its flow is independent from the carrier.",
+      "defaultMotion": "flow",
+      "supportsFlow": true,
+      "supportsText": true
+    },
+    {
+      "id": "bezier",
+      "name": "Cubic path",
+      "family": "Path",
+      "symbol": "∿",
+      "description": "Four control points define a free particle trace in three dimensions.",
+      "defaultMotion": "flow",
+      "supportsFlow": true,
+      "supportsText": false,
+      "particles": true
+    },
+    {
+      "id": "ribbon",
+      "name": "Ribbon",
+      "family": "Composite",
+      "symbol": "≋",
+      "description": "Three cubic glyph strands follow a gently rippled carrier.",
+      "defaultMotion": "flow",
+      "supportsFlow": true,
+      "supportsText": true
+    },
+    {
+      "id": "helix",
+      "name": "Helix",
+      "family": "Composite",
+      "symbol": "⌁",
+      "description": "Two rising text turns mapped onto one cylindrical carrier.",
+      "defaultMotion": "rotate-y",
+      "supportsFlow": true,
+      "supportsText": true
+    },
+    {
+      "id": "spiral",
+      "name": "Spiral",
+      "family": "Composite",
+      "symbol": "ϟ",
+      "description": "An expanding planar coil, assembled from eight tangent-continuous cubics.",
+      "defaultMotion": "rotate-z",
+      "supportsFlow": true,
+      "supportsText": true
+    }
+  ],
+  "motions": [
+    {
+      "id": "still",
+      "name": "Still",
+      "channel": "all",
+      "settings": {
+        "turns": [
+          0,
+          0,
+          0
+        ],
+        "bob": 0,
+        "flow": 0,
+        "glyphs": {
+          "mode": "hold",
+          "rate": 8
+        }
+      },
+      "description": "Hold geometry and glyphs. Suitable for reduced-motion alternatives."
+    },
+    {
+      "id": "rotate-y",
+      "name": "Orbit / Y",
+      "channel": "rotation",
+      "settings": {
+        "turns": [
+          0,
+          1,
+          0
+        ]
+      },
+      "description": "One full turn per loop around the vertical axis."
+    },
+    {
+      "id": "rotate-z",
+      "name": "Roll / Z",
+      "channel": "rotation",
+      "settings": {
+        "turns": [
+          0,
+          0,
+          1
+        ]
+      },
+      "description": "One full turn per loop in the object plane."
+    },
+    {
+      "id": "tumble",
+      "name": "Tumble / XY",
+      "channel": "rotation",
+      "settings": {
+        "turns": [
+          1,
+          1,
+          0
+        ]
+      },
+      "description": "One turn on each of two axes, closing at the loop seam."
+    },
+    {
+      "id": "bob",
+      "name": "Float",
+      "channel": "offset",
+      "settings": {
+        "bob": 0.18
+      },
+      "description": "A gentle vertical sine cycle. Combine with rotation or flow."
+    },
+    {
+      "id": "flow",
+      "name": "Flow forward",
+      "channel": "flow",
+      "requires": "path",
+      "settings": {
+        "flow": 1
+      },
+      "description": "Move text on mapped paths, or light pulses on a free cubic trace."
+    },
+    {
+      "id": "reverse-flow",
+      "name": "Flow backward",
+      "channel": "flow",
+      "requires": "path",
+      "settings": {
+        "flow": -1
+      },
+      "description": "Reverse the content direction along a ring or cubic path."
+    },
+    {
+      "id": "flicker",
+      "name": "Matrix flicker",
+      "channel": "glyph",
+      "settings": {
+        "glyphs": {
+          "mode": "flicker",
+          "rate": 12
+        }
+      },
+      "description": "Change characters in place, independently from geometry."
+    },
+    {
+      "id": "stream",
+      "name": "Character cadence",
+      "channel": "glyph",
+      "settings": {
+        "glyphs": {
+          "mode": "stream",
+          "rate": 3
+        }
+      },
+      "description": "A slower character-change cadence, independent from geometry."
+    }
+  ],
+  "materials": [
+    {
+      "id": "wire",
+      "name": "Wire",
+      "description": "Small, subdued crosses for carrier geometry.",
+      "glyphs": {
+        "characters": "+",
+        "text": ""
+      },
+      "material": {
+        "color": "white",
+        "opacity": 0.55,
+        "size": 10
+      }
+    },
+    {
+      "id": "signal",
+      "name": "Signal",
+      "description": "Readable typography with a mint highlight.",
+      "glyphs": {
+        "characters": "01.:+=*#",
+        "text": "OBSERVE / SIGNAL / "
+      },
+      "material": {
+        "color": "mint",
+        "opacity": 0.95,
+        "size": 12
+      }
+    },
+    {
+      "id": "matrix",
+      "name": "Matrix",
+      "description": "Dense alphanumeric texture. Character motion is a separate choice.",
+      "glyphs": {
+        "characters": "01ABCDEFGHIJKLMNOPQRSTUVWXYZ.:+=*#%@",
+        "text": ""
+      },
+      "material": {
+        "color": "acid",
+        "opacity": 0.85,
+        "size": 11
+      }
+    },
+    {
+      "id": "spectrum",
+      "name": "Spectrum",
+      "description": "Color follows the path coordinate, useful for tracing a signal.",
+      "glyphs": {
+        "characters": "+*.:",
+        "text": ""
+      },
+      "material": {
+        "color": "rainbow",
+        "opacity": 1,
+        "size": 13
+      }
+    }
+  ],
+  "behaviors": [
+    {
+      "id": "shell",
+      "name": "Source shell",
+      "target": "layout",
+      "settings": {
+        "layout": {
+          "type": "sphere",
+          "key": "id",
+          "label": "title",
+          "interactive": true,
+          "reflow": true,
+          "shatterAt": 180,
+          "reflowDuration": 2.8
+        },
+        "spin": 0.18
+      },
+      "description": "A spherical record array with reversible character overflow."
+    },
+    {
+      "id": "spiral-index",
+      "name": "Helical index",
+      "target": "layout",
+      "settings": {
+        "layout": {
+          "type": "helix",
+          "key": "id",
+          "label": "title",
+          "density": 120
+        },
+        "spin": -0.12
+      },
+      "description": "Arrange records along the flow framework’s helical organizer."
+    },
+    {
+      "id": "category-grid",
+      "name": "Category grid",
+      "target": "layout",
+      "settings": {
+        "layout": {
+          "type": "grid",
+          "key": "id",
+          "label": "title",
+          "groupBy": "category",
+          "groups": [
+            "FORM",
+            "MOTION",
+            "SIGNAL"
+          ],
+          "density": 90
+        },
+        "spin": 0
+      },
+      "description": "Arrange records by their explicit category, without changing that field."
+    },
+    {
+      "id": "hop-sort",
+      "name": "Hop → pixel sort",
+      "target": "interaction",
+      "settings": {
+        "interaction": {
+          "travel": "hop",
+          "receive": "pixel-sort",
+          "duration": 0.9,
+          "textField": "title"
+        }
+      },
+      "description": "Letters hop to the receiver, reassemble, then commit the record."
+    },
+    {
+      "id": "hop-categorize",
+      "name": "Hop → classify",
+      "target": "interaction",
+      "settings": {
+        "interaction": {
+          "travel": "hop",
+          "receive": "categorize",
+          "duration": 1.1,
+          "textField": "title"
+        }
+      },
+      "description": "Letters travel to a category slot before its grouping handler commits."
+    },
+    {
+      "id": "direct",
+      "name": "Direct receipt",
+      "target": "interaction",
+      "settings": {
+        "interaction": {
+          "travel": "stream",
+          "receive": "none",
+          "duration": 0,
+          "textField": "title"
+        }
+      },
+      "description": "A glyph carrier with no receiving delay."
+    },
+    {
+      "id": "weave",
+      "name": "Geometry weave",
+      "target": "geometry",
+      "settings": {
+        "motion": {
+          "type": "weave",
+          "duration": 2.8
+        }
+      },
+      "description": "A staggered geometry transition; it creates no transport flight."
+    },
+    {
+      "id": "quick-settle",
+      "name": "Quick settle",
+      "target": "geometry",
+      "settings": {
+        "motion": {
+          "type": "linear",
+          "duration": 0.35
+        }
+      },
+      "description": "A brief local transition for small state changes."
+    }
+  ],
+  "tokens": {
+    "background": "#080e10",
+    "surface": "#0b1714",
+    "ink": "#c8d9d6",
+    "muted": "#789a89",
+    "line": "#29483c",
+    "accent": "#b5e6cf",
+    "focus": "#c4f6d6",
+    "colors": {
+      "white": "#e0e5e2",
+      "mint": "#95f2c4",
+      "cyan": "#86d6ee",
+      "amber": "#e6bd75",
+      "acid": "#c9ff38"
+    },
+    "space": [
+      4,
+      8,
+      12,
+      16,
+      24,
+      32,
+      48
+    ],
+    "radius": 2,
+    "font": "ui-monospace, SFMono-Regular, Menlo, monospace",
+    "timing": {
+      "quick": 0.35,
+      "reflow": 2.8,
+      "receive": 0.9,
+      "loop": 12
+    }
+  }
+}

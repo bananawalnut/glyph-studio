@@ -41,3 +41,7 @@ Run `npm test` for engine, API, lifecycle and designer integration checks. Run `
 ## Flow scope
 
 The flow page loads `glyph-flow`, covering component-owned interfaces, contracts, registered handlers/layouts/exports and method invocations. Hermes sees five flow tools and stages a draft before commit. Codex sees two read-only flow tools and returns a structured proposal plus calls. Scene scope retains nine native tools/four read-only tools. The full reusable plugin exports 14 native tools and the generic read-only MCP exports six. Tool lists are selected per target in the worker, and its local adapter rejects cross-target requests. No generated handler source runs in a flow document. See [the flow contract and receipt lifecycle](functional-components.md).
+
+## Shared preset design system
+
+The maintained geometry and composition skills use glyph_studio_library with kind design-system or a focused object/motion/material/behavior ID. Objects return ordinary validated scene candidates, not applied changes. Flow reads include the same behavior presets, with explicit layout/interaction/geometry targets. Flow designers need no extra scene authority to inspect their presets. Preserve existing content and clocks when combining instances, and use the established revision gates when committing. See [the design system](design-system.md).

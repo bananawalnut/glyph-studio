@@ -57,3 +57,5 @@ energy: bezier; rainbow; flow 1; size 7
 ```
 
 Use whole-number turns and flow for geometric loop closure. Reproduction requires the same recipe and frame index; pixel-identical output also requires fixed renderer, font, browser and canvas dimensions.
+
+The shared design system is available through `glyph_studio_library(kind="design-system")`; inspect `object`, `motion`, `material` or `behavior` with an id for a focused entry. Object presets return validated scene candidates without applying them. Reuse these for standard shapes and motion, preserve unrelated layers and content, and distinguish local preview from a committed edit.

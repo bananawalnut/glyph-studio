@@ -114,3 +114,5 @@ python3 hermes/test-attach.py
 `hermes/test-native.py` additionally checks actual Hermes plugin loading and tool dispatch when run with the Python environment installed with Hermes. It uses a temporary home and does not invoke a model or start a gateway.
 
 The `/flow` panel edits staged flow documents and queues typed method calls. Programmer-defined interfaces and browser receipts are documented in [functional components](../docs/functional-components.md). The full reusable plugin registers 14 tools; the dedicated worker advertises only the current target’s tools.
+
+The existing library tool now reads the shared design system with kind design-system/object/motion/material/behavior. Object entries include normal scene candidates without applying them; flow/draft reads include behavior presets outside the stored document. See ../docs/design-system.md for the API and schema distinctions.

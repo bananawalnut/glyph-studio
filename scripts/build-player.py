@@ -6,9 +6,10 @@ p=argparse.ArgumentParser(description=__doc__);p.add_argument('--rust',action='s
 if args.rust:
     subprocess.run(['cargo','build','--manifest-path',str(root/'rust/glyph-core/Cargo.toml'),'--release','--target','wasm32-unknown-unknown','--offline'],check=True,cwd=root)
     shutil.copyfile(root/'rust/glyph-core/target/wasm32-unknown-unknown/release/glyph_core.wasm',root/'dist/glyph-core.wasm')
+subprocess.run(['node',str(root/'scripts/build-design.cjs')],check=True)
 source='/* Glyph Studio player — native Web Components + WebGL2, no dependencies. */\n'+'\n'.join((root/'player'/f).read_text() for f in ['geometry.js','renderer.js','component.js'])
 (root/'dist/glyph-player.js').write_text(source)
 flow='/* Glyph Flow — optional functional content and animated transfers. */\n'+'\n'.join((root/'player'/f).read_text() for f in ['flow-core.js','flow-model.js','flow-component.js','flow-document.js'])
 (root/'dist/glyph-flow.js').write_text(flow)
-sizes={f:{'bytes':(root/'dist'/f).stat().st_size,'gzip_bytes':len(gzip.compress((root/'dist'/f).read_bytes(),mtime=0))} for f in ['glyph-player.js','glyph-core.wasm','glyph-flow.js']}
+sizes={f:{'bytes':(root/'dist'/f).stat().st_size,'gzip_bytes':len(gzip.compress((root/'dist'/f).read_bytes(),mtime=0))} for f in ['glyph-player.js','glyph-core.wasm','glyph-flow.js','glyph-design.js']}
 (root/'dist/player-sizes.json').write_text(json.dumps(sizes,indent=2)+'\n');print(json.dumps(sizes))

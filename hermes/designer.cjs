@@ -1,5 +1,6 @@
 'use strict';
 const fs=require('node:fs'),path=require('node:path'),E=require('../dist/scene.js');
+const DS=require('../dist/glyph-design.js');
 const ROOT=path.join(__dirname,'plugin','glyph-studio'),directory=path.join(ROOT,'designer');
 const profile=()=>JSON.parse(fs.readFileSync(path.join(directory,'profile.json'),'utf8'));
 function toolNames(provider,target){const names=profile().tools[provider];return !target?names:names.filter(n=>target==='flow'?n.startsWith('glyph_flow_'):!n.startsWith('glyph_flow_'));}
@@ -13,6 +14,8 @@ const ANIMALS={
  'betta':{name:'Betta',motion:'Restrained body wave and independently delayed long-fin membranes; membrane lag is art directed.',source:'https://pubmed.ncbi.nlm.nih.gov/34853171/'}
 };
 function library(args={}){const kind=args.kind||'profile',id=args.id;if(id!==undefined&&typeof id!=='string')throw Error('id must be a string');
+ if(kind==='design-system')return {designSystem:DS.catalog()};
+ if(['object','motion','material','behavior'].includes(kind)){if(!id)return {[kind+'s']:DS.catalog()[{object:'objects',motion:'motions',material:'materials',behavior:'behaviors'}[kind]]};const entry=DS.preset(kind,id);return {preset:entry,...(kind==='object'?{scene:DS.scene({object:id}),options:['object','motions','material','color','text','seed','duration','id']}:{}),applied:false};}
  if(kind==='profile')return {profile:profile()};
  if(kind==='skill'){const p=profile();if(!id)return {skills:p.skills};if(!p.skills.some(s=>s.id===id))throw Error('Unknown skill');return {id,instructions:fs.readFileSync(path.join(ROOT,'skills',id,'SKILL.md'),'utf8')};}
  if(kind==='preset'){const list=Object.entries(E.EXAMPLES).map(([name,text])=>{const s=E.compile(text).scene;return {id:name,duration:s.duration,objects:s.objects.length,surfaces:s.surfaces?.length||0};});if(!id)return {presets:list};if(!Object.hasOwn(E.EXAMPLES,id))throw Error('Unknown preset');return {id,...E.compile(E.EXAMPLES[id])};}

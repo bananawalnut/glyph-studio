@@ -10,5 +10,9 @@
   "glyph-flow.js": {
     "bytes": 63933,
     "gzip_bytes": 19737
+  },
+  "glyph-design.js": {
+    "bytes": 13225,
+    "gzip_bytes": 4882
   }
 }

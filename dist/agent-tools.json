@@ -145,7 +145,7 @@
   },
   {
     "name": "glyph_studio_library",
-    "description": "Read the studio designer profile, a focused skill, available scene presets or Anima animal references. Omit id for a catalog. Presets are candidates, not applied edits; animal source geometry is not editable here.",
+    "description": "Read the shared design-system catalog, object/motion/material/behavior presets, studio profile, focused skills, scene presets or Anima references. Omit id for a catalog. Presets are candidates, not applied edits; animal source geometry is not editable here.",
     "parameters": {
       "type": "object",
       "properties": {
@@ -155,7 +155,12 @@
             "profile",
             "skill",
             "preset",
-            "animal"
+            "animal",
+            "design-system",
+            "object",
+            "motion",
+            "material",
+            "behavior"
           ]
         },
         "id": {

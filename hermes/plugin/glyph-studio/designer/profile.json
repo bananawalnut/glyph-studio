@@ -34,7 +34,14 @@
         "curve",
         "path",
         "map",
-        "cubic"
+        "cubic",
+        "ribbon",
+        "helix",
+        "spiral",
+        "preset",
+        "material",
+        "motion",
+        "design system"
       ]
     },
     {

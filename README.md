@@ -91,6 +91,10 @@ Selecting Codex sends the prompt and current built scene (or current flow on `/f
 
 Requests without a `provider` still use Hermes, preserving older clients. The on-device Hermes worker remains loopback-only. The v2 recipe format and animal components are unchanged. See [Codex connection and request contract](docs/codex-connection.md).
 
+## Shared design system
+
+Open [the design library](http://127.0.0.1:8788/design) for 10 object presets (including mapped ribbons, helices and spirals), 9 motion choices, 4 materials and 8 component behaviors. Preview, combine motion with material/content, download baked recipes, append an object to the current scene, or apply layout/receiving settings to a selected flow component. Shared color, spacing, type and timing tokens are included. The Studio Designer discovers the same catalog; the core player stays unchanged. See [presets, API and compatibility](docs/design-system.md).
+
 ## Component interfaces and flow design
 
 [Glyph Flow](http://127.0.0.1:8788/flow) now supports programmer-owned named methods and typed results, such as `source.api.add(record)`. Components own state, handlers, contracts, native HTML and visual organizers. The shared transport animates method input and commits on arrival. Programmer subclasses and custom pure handlers work through the same API.

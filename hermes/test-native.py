@@ -28,8 +28,9 @@ with tempfile.TemporaryDirectory(prefix='glyph-native-') as temporary:
         for skill in ['glyph-surfaces','glyph-biomotion','glyph-review','glyph-flow']:
             assert manager._plugin_skills['glyph-studio:'+skill]['path'].is_file()
         library=json.loads(registry.dispatch('glyph_studio_library',{'kind':'profile'}));assert library['profile']['id']=='glyph-studio-designer'
+        design=json.loads(registry.dispatch('glyph_studio_library',{'kind':'object','id':'ribbon'}));assert len(design['scene']['objects'])==3
         audit=json.loads(registry.dispatch('glyph_studio_audit',{}));assert audit['valid'] and not audit['visualReview']
-        flow=json.loads(registry.dispatch('glyph_flow_read',{}));assert flow['ok'] and len(flow['flow']['components'])==3
+        flow=json.loads(registry.dispatch('glyph_flow_read',{}));assert flow['ok'] and len(flow['flow']['components'])==3 and len(flow['presets'])==8
         validation=json.loads(registry.dispatch('glyph_flow_validate',{}));assert validation['valid']
         read=json.loads(registry.dispatch('glyph_studio_read',{}));assert read['ok'],read
         changed=json.loads(registry.dispatch('glyph_studio_update',{'kind':'surface','id':'body','changes':{'shape':'cylinder'},'expected_revision':read['revision']}));assert changed['ok'],changed
