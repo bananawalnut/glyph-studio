@@ -39,10 +39,12 @@ def connection():
 def call(name, arguments=None):
     try:
         scope=os.environ.get('GLYPH_STUDIO_SCOPE')
-        if scope=='flow' and not name.startswith('glyph_flow_') or scope=='scene' and name.startswith('glyph_flow_'):
+        if scope=='flow' and not name.startswith('glyph_flow_') or scope in ('scene','preset') and name.startswith('glyph_flow_'):
             return {'ok':False,'error':{'code':'target_denied','message':'Tool belongs to a different designer target.'}}
         url, token = connection()
-        context={'job_id':os.environ['GLYPH_STUDIO_JOB']} if scope=='flow' and os.environ.get('GLYPH_STUDIO_JOB') else {}
+        context={'job_id':os.environ['GLYPH_STUDIO_JOB']} if scope in ('flow','preset') and os.environ.get('GLYPH_STUDIO_JOB') else {}
+        if scope == 'preset':
+            context['scope']='preset'
         req = urllib.request.Request(url + '/api/tool', data=json.dumps({'name':name,'arguments':arguments or {},'context':context}).encode(), headers={'Authorization':'Bearer '+token,'Content-Type':'application/json'}, method='POST')
         opener = urllib.request.build_opener(urllib.request.ProxyHandler({}), NoRedirect())
         try:

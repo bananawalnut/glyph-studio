@@ -41,7 +41,7 @@ try:
     request = json.loads(sys.stdin.read())
     config = request['config']
     target = request.get('target', 'scene')
-    if target not in ('scene', 'flow'):
+    if target not in ('scene', 'flow', 'preset'):
         raise RuntimeError('Unknown designer target.')
     from urllib.parse import urlparse
     url = urlparse(config['base_url'])
@@ -67,6 +67,8 @@ try:
         designer=importlib.util.module_from_spec(spec);spec.loader.exec_module(designer)
         active=designer.context(request['prompt'],'hermes',plugin,target)
         system=active['text']+'\nDESIGN CONTRACT:\n'+guide
+        if target == 'preset':
+            system+='\nPRESET WORKSPACE: You create NEW reusable objects or motions in an isolated scene draft. Read the draft first. Prefer glyph_studio_update with minimal changes for variations; do not rebuild existing layers using directives. Use glyph_studio_library to get a complete preset scene when starting a new composition, then glyph_studio_apply or glyph_studio_add/update to customize it. Use existing surfaces, mapped curves and free cubic paths to build new compositions; no arbitrary code. To start fresh remove glyph objects then their hosts, or apply a complete scene. Changes are staged until completion. Only update motions/glyph mode/rate for a motion-only request. The user reviews and saves afterward; never claim already saved. New geometry must compose the supported primitives. Read glyph_studio_library for reusable building blocks.'
         system+='\nYou are scoped to '+target+'. Use only the advertised tools. For flows every edit and method call is staged until this turn completes; read the draft first. Preserve unrelated current state. A queued call needs a browser receipt before delivery. Never claim a screenshot review.'
         agent = AIAgent(model=config['model'], **credentials, enabled_toolsets=['glyph_studio'],
                         max_iterations=12, max_tokens=2400, quiet_mode=True,

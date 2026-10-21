@@ -1,0 +1,23 @@
+
+'use strict';
+const fs=require('node:fs'),path=require('node:path'),E=require('../dist/scene.js'),P=require('../player/presets.js'),DS=require('../player/design-system.js');
+const clone=structuredClone;
+function validScene(scene){try{E.validate(scene);}catch(e){fail(400,e.message);}}
+function validPreset(preset){try{P.validate(preset);}catch(e){fail(400,e.message);}}
+function fail(status,message){throw Object.assign(Error(message),{status,code:status===409?'revision_conflict':'invalid_preset'});}
+class PresetStore{
+ constructor(directory){this.file=path.join(directory,'presets.json');this.state=fs.existsSync(this.file)?JSON.parse(fs.readFileSync(this.file,'utf8')):{version:1,revision:0,presets:[],draft:{revision:0,scene:DS.scene({object:'ribbon'})}};if(this.state.version!==1||!Number.isInteger(this.state.revision)||this.state.revision<0||!Array.isArray(this.state.presets))throw Error('Invalid preset store');for(const p of this.state.presets)P.validate(p);E.validate(this.state.draft.scene);}
+ persist(next){const tmp=this.file+'.tmp';fs.writeFileSync(tmp,JSON.stringify(next,null,2),{mode:0o600});fs.renameSync(tmp,this.file);this.state=next;return this.read();}
+ read(){return {ok:true,...clone(this.state)};}
+ draft(){return clone(this.state.draft);}
+ summary(){return this.state.presets.map(({scene,...metadata})=>({...clone(metadata),layers:scene.objects.length,surfaces:(scene.surfaces||[]).length}));}
+ poll(revision,draftRevision){if(String(this.state.revision)===revision&&String(this.state.draft.revision)===draftRevision)return {ok:true,unchanged:true};return this.read();}
+ commit(scene,revision){validScene(scene);if(revision!==this.state.draft.revision)fail(409,'Preset draft changed. Read it again before applying.');return this.persist({...this.state,draft:{revision:revision+1,scene:clone(scene)}}).draft;}
+ save({preset,expected_revision,expected_draft_revision}){validPreset(preset);if(expected_revision!==this.state.revision||expected_draft_revision!==this.state.draft.revision)fail(409,'The library or draft changed. Review the latest preview before saving.');if(JSON.stringify(preset.scene)!==JSON.stringify(this.state.draft.scene))fail(409,'Save the previewed draft, not an older candidate.');const list=clone(this.state.presets),index=list.findIndex(p=>p.id===preset.id);if(index<0){if(list.length>=100)fail(400,'Library holds at most 100 custom presets.');list.push(clone(preset));}else list[index]=clone(preset);return this.persist({...this.state,revision:this.state.revision+1,presets:list});}
+}
+// Hermes edits this isolated in-memory scene; commit happens once after successful completion.
+class SceneDraft{
+ constructor(before,customPresets=[]){this.customPresets=clone(customPresets);this.scene=clone(before.scene);this.revision=before.revision;}
+ tool(name,args={}){const {merge}=require('./bridge.cjs');const D=require('./designer.cjs');if(name==='glyph_studio_library'){const {scene,...unused}=this.customPresets.find(p=>p.id===args.id)||{};if(scene)return {ok:true,preset:clone(this.customPresets.find(p=>p.id===args.id)),applied:false};return {ok:true,...D.library(args),customPresets:this.customPresets.map(({scene,...metadata})=>metadata)};}if(name==='glyph_studio_read')return {ok:true,scene:clone(this.scene),revision:this.revision,warnings:E.loopWarnings(this.scene)};if(name==='glyph_studio_compile')return E.compile(args.directives);if(name==='glyph_studio_audit')return D.audit(args.recipe_json?JSON.parse(args.recipe_json):this.scene,this.revision);if(name==='glyph_studio_preview')return {ok:true,...D.audit(this.scene,this.revision),note:'Draft geometry audit only; preview updates in the library after completion.'};if(args.expected_revision!==this.revision)fail(409,'Read the latest preset draft revision.');let next=clone(this.scene);if(name==='glyph_studio_apply')next=clone(args.scene);else{if(!['glyph_studio_add','glyph_studio_remove','glyph_studio_update'].includes(name)||!['object','surface'].includes(args.kind))fail(400,'Unknown draft tool.');const key=args.kind==='surface'?'surfaces':'objects';next[key]??=[];if(name==='glyph_studio_add'){const d=args.definition;next[key].push(merge(args.kind==='surface'?E.baseSurface(d.id,d.shape||'sphere'):d.geometry?.type==='mapped'?E.mapped(d.id):E.base(d.id,d.geometry?.type||'bezier'),d));}else{const index=next[key].findIndex(o=>o.id===args.id);if(index<0)fail(400,'Unknown draft layer.');if(name==='glyph_studio_remove')next[key].splice(index,1);else{if(Object.hasOwn(args.changes,'id'))fail(400,'Layer ids cannot be renamed.');merge(next[key][index],args.changes);}}}E.validate(next);this.scene=next;this.revision++;return this.tool('glyph_studio_read');}
+}
+module.exports={PresetStore,SceneDraft};

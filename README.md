@@ -150,3 +150,16 @@ Optional native plugin validation, using Hermes' virtualenv Python:
 | `build.py` | Standalone exports and portable packages |
 
 This project runs independently of GPT Sites. Private runtime state, tokens, local Hermes homes and model weights are ignored by Git and excluded from exports. Public source does not include your working scene or agent conversations.
+
+
+### Prompt-created presets and local dictation
+
+Open [Preset Workshop](http://127.0.0.1:8788/presets) to ask the Studio Designer (local Hermes or Codex) for new objects or animations. Both providers edit a separate revision-checked draft. Preview it, name it, choose Object or Motion, and click **Save new preset**. Saved entries also appear in the [design system](http://127.0.0.1:8788/design). Reopen a copy for refinement, apply to the current scene, or export portable JSON. See [preset and voice contracts](docs/preset-workshop.md).
+
+Every designer prompt field includes **Dictate**. It records only after a click, stops after 59 seconds, transcribes through local Whisper, and inserts text for review without sending the prompt. Connect an existing Python environment containing `openai-whisper` and a local `.pt` model:
+
+```sh
+npm run connect:voice -- --python /absolute/path/to/venv/bin/python --model /absolute/path/to/tiny.pt
+```
+
+`ffmpeg` must be installed (`--ffmpeg /absolute/path/to/ffmpeg` overrides detection). Setup downloads nothing. Microphone permission belongs to your browser. Audio is temporary and removed after processing. Your selected designer provider receives text only when you submit. Dictation runs in the local dev server; standalone HTML previews remain offline without agent or recording services.

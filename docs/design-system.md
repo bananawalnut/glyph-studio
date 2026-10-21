@@ -91,3 +91,8 @@ The Studio Designer reads the same catalog through the existing `glyph_studio_li
 The original player and flow bundles stay unchanged. The preset module is optional; the gallery loads it with the existing renderers. `dist/player-sizes.json` reports its separate byte/gzip cost. This is component evidence rather than a cross-device frame-rate qualification.
 
 `node test-design.cjs` checks all supported default object/motion combinations, independent channels, loop closure, finite samples, tangent continuity, deterministic output, ID allocation, append immutability, limits, tokens, flow compatibility and authenticated HTTP discovery. `/design-check.html` runs the real gallery in an isolated browser fixture with mocked mutation endpoints: object previews, meaningful text/motion controls, invalid candidates, stale writes, append preservation, behavior patches, receiving before commit and geometry-only shuffle. Full studio, animal, Wasm, flow, provider and Hermes-loader checks remain separate regression evidence.
+
+
+## Your own objects and animations
+
+The [preset workshop](http://127.0.0.1:8788/presets) extends the library with prompt-created, data-only custom objects and motions. Hermes and Codex edit a separate preview draft; **Save new preset** persists a named variation. Custom entries appear below the built-in gallery and are discoverable by the designer. Reopen a copy, transfer a motion onto other geometry, apply an object to the current scene, or export its JSON. The renderer schema and built-in IDs remain unchanged. See [the preset/voice contract](preset-workshop.md) for persistence, version checks, role-based motion mapping, portability and dictation.

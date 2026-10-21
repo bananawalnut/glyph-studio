@@ -14,5 +14,9 @@
   "glyph-design.js": {
     "bytes": 13225,
     "gzip_bytes": 4882
+  },
+  "presets.js": {
+    "bytes": 2855,
+    "gzip_bytes": 1174
   }
 }

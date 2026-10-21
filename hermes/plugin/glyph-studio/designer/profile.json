@@ -3,7 +3,7 @@
   "id": "glyph-studio-designer",
   "name": "Studio Designer",
   "role": "Procedural motion designer",
-  "purpose": "Design reproducible glyph scenes and functional components with their own typed method interfaces.",
+  "purpose": "Design reproducible glyph scenes, reusable object and motion presets, and functional components with typed method interfaces.",
   "identity": "SOUL.md",
   "workflow": "WORKFLOW.md",
   "memory": "Current saved scene or flow and this maintained profile; no cross-turn chat memory is enabled.",
@@ -121,8 +121,8 @@
     ]
   },
   "execution": {
-    "hermes": "Local model. Scene tools edit directly; flow tools stage a revision-checked draft committed once at completion.",
-    "codex": "Hosted model. Read-only tools, followed by one validated scene or flow proposal."
+    "hermes": "Local model. Scene tools edit directly; flow and preset tools stage isolated revision-checked drafts committed once at completion.",
+    "codex": "Hosted model. Read-only scoped tools, followed by one validated scene, flow or preset draft proposal."
   },
   "boundaries": [
     "No shell, publishing, messaging or credential access through this designer.",
