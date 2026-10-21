@@ -160,6 +160,27 @@ Category clusters owns a `categorize` receiving animation: letters settle into a
 
 These capabilities are additive: layouts without interactive marks retain their old appearance and behavior; transfers without `fromMark` retain center origins. The document metadata enables hit targets, while applications own event bindings. Designer prompts can edit interactive layout settings and receiving effects, but cannot install arbitrary event-handling source through a data document.
 
+## Geometry-only reorganization and capacity
+
+**Shuffle source** calls a pure seeded Fisher–Yates permutation. The real source array changes order immediately; the on-screen array strip reflects it. No transfer, copy or receiving phase is created. Stable record/letter IDs let geometry follow staggered cubic curves in three dimensions with smooth starts and finishes. Existing scaffold glyphs remain fixed in the component's local geometry. Whole-component spin continues independently.
+
+```js
+// A local operation: validate state/result, commit once, animate only geometry.
+source.dispatch('shuffle', {seed:23});
+// Reconfigure the organizer without replacing the node or its records.
+workspace.configureLayout('source', {
+  reflow:true, shatterAt:120, reflowDuration:2.8
+});
+```
+
+The registered `shuffle` handler accepts `{seed}` (integer 0..4294967295) and returns the reordered array. Identical starting arrays and seeds reproduce the permutation; repeated clicks permute the current array. It preserves every record. As with any method, programmers choose the name and its input/output schemas. `api.shuffle` remains the standard traveling ingress API; use `dispatch` for a synchronous local operation.
+
+Source geometry settings expose the seed, character limit, shatter toggle and reorganization duration. `layout.reflow:true` represents words with stable letter glyphs and one accessible anchor per record. If the sum of label-field Unicode code points is **strictly greater** than `layout.shatterAt`, the letters disperse across a Fibonacci sphere. A limit of zero disables this view. Bringing the total back under the limit, raising the limit, or switching it off re-forms the same words. No records, categories or order are changed by shattering. Clicking a fragment sends its whole record; keyboard users retain one named native target per word.
+
+`GlyphNode.reorganize(organize,{type:'weave',duration:2.8})` is the programmer hook. It checks the new organizer before replacing it, preserving state, revision and epoch. `GlyphFlow.Document.configureLayout` validates through the shared data compiler and emits the normal persisted change. New transitions start from currently rendered coordinates, allowing an interrupted motion to continue smoothly. `source.geometry` exposes `{active,progress}`, and `glyph-geometry` emits `started`/`settled`. Motion uses simulation time, respects pause/visibility, and skips delay under reduced motion. `motion` on a code-defined component accepts `linear`/`weave` and duration 0.1..6; existing definitions retain a 0.35-second linear transition. Reflow layout defaults to 2.8 seconds.
+
+Organizers remain bounded to 1024 marks including scaffold, anchors and letters, and 64 interactive anchors. Oversized layouts reject before a handler state is committed. Owners on letter marks refer back to interactive record anchors; optional `hitLabel` controls the native hit width independently from the accessible word label; native buttons stay bounded while canvas glyph hits can activate each scattered letter. Standalone reflow has no runtime dependency. Flow documents without the additive layout fields load with their original behavior. The demo upgrades only its source sphere, adding the shuffle method when absent and preserving its content, baseline, other methods, contracts, obstacle and routes.
+
 ## Data documents and the prompt designer
 
 `GlyphFlow.Document` is a DOM adapter over the same pure `GlyphFlow.model` compiler used by the bridge:
@@ -173,7 +194,7 @@ const saved = workspace.document; // includes current state
 
 Flow v1 has `title`, named `contracts`, `components`, `connections` and `obstacles`. Each component owns `stateContract`, `initial`, `state`, `methods`, a published `output` and `layout`. Methods reference named/inline input and result contracts and a registered handler. Connections name `from`, `to`, receiving `method`, and `identity`, `first` or `batch` mapping. See [the compact document contract](../dist/flow-guide.txt) and `player/flow-model.js` for exact fields and registry options. Initial is the reset baseline; editing a layout preserves current state. Definitions are bounded to 10 components, 16 methods each, 32 contracts, 24 connections, three declared obstacles and 64 KiB. Unknown fields, strategy names and code strings fail validation. Connections check current exported data against the next input; this is not a static proof for all future values.
 
-The optional registry has append/upsert/remove/replace/group/accept-envelope/select handlers, sphere/grid/helix organizers and identity/flatten/envelope exports. Programmers can register trusted factories with `GlyphFlow.model.registry.register(kind, id, factory, description)` or pass their own registry to `new GlyphFlow.Document(element,{registry})`. These factories are application code. Register server and browser implementations together when using the bridge; the bridge uses its own known registry. The data document does not contain JavaScript.
+The optional registry has append/upsert/remove/shuffle/replace/group/accept-envelope/select handlers, sphere/grid/helix organizers and identity/flatten/envelope exports. Programmers can register trusted factories with `GlyphFlow.model.registry.register(kind, id, factory, description)` or pass their own registry to `new GlyphFlow.Document(element,{registry})`. These factories are application code. Register server and browser implementations together when using the bridge; the bridge uses its own known registry. The data document does not contain JavaScript.
 
 `/flow` provides a method console, JSON document editor, and **Studio Designer** prompt panel. Both providers share the flow skill:
 
