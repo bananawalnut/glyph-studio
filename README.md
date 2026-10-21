@@ -2,6 +2,23 @@
 
 A local tool for reproducible 3D glyph animations. Compose sparse shells, text signals, flickering glyphs and cubic Bézier ribbons, with independent geometry and motion. The included Zenith / Open Consultancy scene uses a dim cross sphere and a thin cyan text ring rotating in opposite directions.
 
+## Embed it as a Web Component
+
+The default renderer is now WebGL2 with GLSL shaders and a glyph atlas, with Canvas 2D as a fallback. A standalone component attaches normal HTML content and buttons to points in the scene:
+
+```html
+<script src="glyph-player.js" defer></script>
+<glyph-scene src="scene.json" geometry="wasm">
+  <glyph-anchor object="shell" position="1.3 0 0">
+    <button>Open a conversation</button>
+  </glyph-anchor>
+</glyph-scene>
+```
+
+Copy the player and scene JSON; include `glyph-core.wasm` next to the player when using `geometry="wasm"`. Omit that attribute for the smallest initial payload. The optional Rust module compiles geometry once per load/edit; GPU shaders animate it without per-glyph JavaScript work. No editor or agent runtime is shipped to visitors.
+
+See [component API, constraints and performance notes](docs/web-components.md). With the dev server running, open [the component demo](http://127.0.0.1:8788/components.html) or [the browser benchmark](http://127.0.0.1:8788/benchmark.html).
+
 ## Run the dev server
 
 Requires Node.js 18 or newer. The browser tool has no npm dependencies and needs no build step.
@@ -70,6 +87,9 @@ Optional native plugin validation, using Hermes' virtualenv Python:
 | `hermes/agent-worker.py` | Restricted on-device Hermes turn |
 | `hermes/plugin/glyph-studio/` | Reusable Hermes plugin and skill |
 | `hermes/start.py` | Local model and editor launcher |
+| `player/` | Dependency-free Web Component and WebGL2 player source |
+| `rust/glyph-core/` | Optional, allocation-free Rust/Wasm geometry compiler |
+| `scripts/` | Player build and geometry benchmark |
 | `build.py` | Standalone exports and portable packages |
 
 This project runs independently of GPT Sites. Private runtime state, tokens, local Hermes homes and model weights are ignored by Git and excluded from exports. Public source does not include your working scene or agent conversations.

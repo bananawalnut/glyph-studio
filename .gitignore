@@ -12,3 +12,5 @@ __pycache__/
 connection.path
 *.gguf
 *.safetensors
+
+**/target/

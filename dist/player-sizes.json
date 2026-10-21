@@ -1,0 +1,10 @@
+{
+  "glyph-player.js": {
+    "bytes": 29938,
+    "gzip_bytes": 10811
+  },
+  "glyph-core.wasm": {
+    "bytes": 3323,
+    "gzip_bytes": 1564
+  }
+}
