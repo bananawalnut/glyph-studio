@@ -221,3 +221,6 @@ The addition leaves saved recipes and player consumers unchanged. No scene migra
 Code-defined `motion:{type:'custom',duration:1.8,sample:(from,to,{progress,seed})=>({x,y,z})}` lets an organizer choose its own geometry transition function. It retains immutable mark metadata and exact endpoints; invalid samples settle to the target and emit a flow error. This callback is application code, not a saved JSON field.
 
 `registry.register(kind,id,factory,description,paramsContract)` optionally exposes typed `spec.params` to a registered handler/layout/export factory. Its parameter schema appears in the catalog. Existing strategies keep their setting fields and reject undeclared params. Match browser/server registrations when using persisted documents. See [parametric geometry and behavior](programmable-geometry.md) for the integrated example.
+
+
+Semantic descriptions and browser discovery are optional, additive to existing component definitions. See [Component Agent Interface](component-agent-interface.md) for stable addresses, per-page indexes/handles, state discovery and addressed method invocation.

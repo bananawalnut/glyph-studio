@@ -17,7 +17,7 @@ onmessage=e=>{try{const m=e.data;if(m.type==='init'){
  if(!component?.interface)throw Error('This program has no component interface.');
  const next=F.prepare(component,state,m.payload,m.method),previousState=state,previousParams=program.params;
  const previous=layout();try{state=next.state;sync();layout();program.sample(m.phase||0);}catch(error){state=previousState;program.setParams(previousParams);throw error;}
- from=previous;transitionAt=performance.now();send({type:'receipt',method:m.method,result:next.result,state,signature:component.interface.describe()});frame(m.phase||0);
+ from=previous;transitionAt=performance.now();send({type:'receipt',requestId:m.requestId,method:m.method,result:next.result,state,signature:component.interface.describe()});frame(m.phase||0);
  }
  }catch(error){send({type:'error',message:String(error.message||error).slice(0,1000)});}};
 })();

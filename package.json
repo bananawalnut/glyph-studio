@@ -1,6 +1,6 @@
 {
   "name": "glyph-studio",
-  "version": "0.11.0",
+  "version": "0.12.0",
   "private": true,
   "description": "Reproducible glyph scenes and functional content components with animated handoffs.",
   "engines": {
@@ -12,7 +12,7 @@
     "dev": "node hermes/bridge.cjs --port 8788 --preset zenith",
     "dev:agent": "python3 hermes/start.py",
     "build": "python3 build.py",
-    "test": "node test-scene.js && node test-surfaces.js && node test-betta.cjs && node test-life.cjs && node test-player.cjs && node test-program.cjs && node test-program-presets.cjs && node test-flow.cjs && node test-flow-model.cjs && node test-design.cjs && node test-presets.cjs && node hermes/test-voice.cjs && node hermes/test-flow-agent.cjs && node hermes/test-bridge.cjs && node hermes/test-agent-jobs.cjs && node hermes/test-program-agent.cjs && node hermes/test-codex.cjs && node hermes/test-designer.cjs && python3 hermes/test-attach.py",
+    "test": "node test-scene.js && node test-surfaces.js && node test-betta.cjs && node test-life.cjs && node test-player.cjs && node test-program.cjs && node test-program-presets.cjs && node test-flow.cjs && node test-flow-model.cjs && node test-component-agent.cjs && node test-design.cjs && node test-presets.cjs && node hermes/test-voice.cjs && node hermes/test-flow-agent.cjs && node hermes/test-bridge.cjs && node hermes/test-agent-jobs.cjs && node hermes/test-program-agent.cjs && node hermes/test-codex.cjs && node hermes/test-designer.cjs && python3 hermes/test-attach.py",
     "build:wasm": "python3 scripts/build-player.py --rust",
     "bench:geometry": "node scripts/bench-geometry.cjs"
   }

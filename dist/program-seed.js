@@ -14,8 +14,9 @@ function create(A, F) {
     ],{transform:c=>M.rotateY(c.phase*M.TAU)})});
   const component = {
     interface:new F.ComponentInterface({
+      description:'A harmonic shell whose component state controls radial deformation.',
       state:{type:'object',properties:{amplitude:number},required:['amplitude'],additionalProperties:false},
-      methods:{sculpt:{input:number,output:number,
+      methods:{sculpt:{description:'Set deformation amplitude, update the organizer and return the accepted value.',input:number,output:number,
         handle:(state,value)=>({state:{...state,amplitude:value},result:value})}}
     }),
     initial:{amplitude:0.22},

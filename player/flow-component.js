@@ -14,6 +14,7 @@ class GlyphNode extends HTMLElement{
  activate(id){if(this.markInteractionDisabled)return;const mark=this._marks.find(m=>m.id===id&&m.interactive);if(!mark)throw new C.FlowError('invalid_mark','Choose an interactive mark.');const position=this._hitMarks.get(id)||this._owner?.project(this,mark);if(!position)throw new C.FlowError('detached_component','Connect the component before activating a mark.');event(this,'glyph-activate',{component:this.id,mark:id,label:mark.accessibleLabel??mark.label,position:C.json(position)});}
  get value(){return this._definition?C.json(this._state):null;}
  get revision(){return this._revision;}
+ get interfaceRevision(){return this._epoch;}
  set props(payload){this.receive(payload);}
  get props(){return this.value;}
  export(){if(!this._definition)throw new C.FlowError('undefined_component','Define the component first.');return C.json(C.output(this._definition,this._state));}

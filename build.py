@@ -28,19 +28,21 @@ flow_skill=hermes/'plugin'/'glyph-studio'/'skills'/'glyph-flow'
 (flow_skill/'references').mkdir(parents=True,exist_ok=True)
 shutil.copyfile(dist/'flow-guide.txt',flow_skill/'references'/'flow-contract.txt')
 html=(dist/'index.html').read_text().replace('<link rel="stylesheet" href="agent-panel.css">','<style>'+(dist/'agent-panel.css').read_text()+'</style>').replace('<link rel="stylesheet" href="style.css">','<style>'+(dist/'style.css').read_text()+'</style>')
-for name in ['scene.js','glyph-player.js','app.js','agent-panel.js']:
+for name in ['scene.js','glyph-player.js','app.js','agent-panel.js','glyph-agent.js','component-agent-ui.js']:
     html=html.replace('<script defer src="'+name+'"></script>','')
-html=html.replace('</body>',''.join('<script>'+(dist/name).read_text()+'</script>' for name in ['scene.js','glyph-player.js','app.js','agent-panel.js'])+'</body>')
+html=html.replace('</body>',''.join('<script>'+(dist/name).read_text()+'</script>' for name in ['scene.js','glyph-player.js','app.js','agent-panel.js','glyph-agent.js','component-agent-ui.js'])+'</body>')
 html=html.replace('href="components.html"','href="https://github.com/bananawalnut/glyph-studio/blob/main/docs/web-components.md"')
 html=html.replace('href="agent-guide.txt"','href="data:text/plain;charset=utf-8,'+quote((dist/'agent-guide.txt').read_text())+'"').replace('href="./"','href="Glyph%20Studio.html"')
 html=html.replace('href="/design"','href="Glyph%20-%20Design%20System.html"')
 html=html.replace('href="betta.html"','href="Betta%20-%20Glyph%20Study.html"').replace('href="life.html"','href="Anima%20-%20Living%20Glyph%20Studies.html"')
+html=html.replace('<link rel="stylesheet" href="component-agent.css">','<style>'+(dist/'component-agent.css').read_text()+'</style>')
 (root/'Glyph Studio.html').write_text(html.replace('href="/presets"','href="Glyph%20-%20Preset%20Workshop.html"'))
 flow=(dist/'flow.html').read_text().replace('<link rel="stylesheet" href="design-tokens.css">','<style>'+(dist/'design-tokens.css').read_text()+'</style>').replace('<link rel="stylesheet" href="agent-panel.css">','<style>'+(dist/'agent-panel.css').read_text()+'</style>').replace('<link rel="stylesheet" href="flow.css">','<style>'+(dist/'flow.css').read_text()+'</style>')
-for name in ['glyph-flow.js','flow-demo.js','agent-panel.js']:
+for name in ['glyph-flow.js','flow-demo.js','agent-panel.js','glyph-agent.js','component-agent-ui.js']:
     flow=flow.replace('<script defer src="'+name+'"></script>','')
-flow=flow.replace('</body>',''.join('<script>'+(dist/name).read_text()+'</script>' for name in ['glyph-flow.js','flow-demo.js','agent-panel.js'])+'</body>')
+flow=flow.replace('</body>',''.join('<script>'+(dist/name).read_text()+'</script>' for name in ['glyph-flow.js','flow-demo.js','agent-panel.js','glyph-agent.js','component-agent-ui.js'])+'</body>')
 flow=flow.replace('href="/"','href="Glyph%20Studio.html"').replace('href="components.html"','href="https://github.com/bananawalnut/glyph-studio/blob/main/docs/functional-components.md"')
+flow=flow.replace('<link rel="stylesheet" href="component-agent.css">','<style>'+(dist/'component-agent.css').read_text()+'</style>')
 (root/'Glyph Flow - Components.html').write_text(flow.replace('href="/design"','href="Glyph%20-%20Design%20System.html"').replace('href="/presets"','href="Glyph%20-%20Preset%20Workshop.html"'))
 design=(dist/'design-system.html').read_text()
 for name in ['design-tokens.css','design-system.css']:
@@ -59,12 +61,12 @@ workshop=workshop.replace('</body>',''.join('<script>'+(dist/name).read_text()+'
 workshop=workshop.replace('href="/"','href="Glyph%20Studio.html"').replace('href="/flow"','href="Glyph%20Flow%20-%20Components.html"').replace('href="/design"','href="Glyph%20-%20Design%20System.html"')
 (root/'Glyph - Preset Workshop.html').write_text(workshop)
 mathlab=(dist/'math-lab.html').read_text()
-for name in ['design-tokens.css','math-lab.css','agent-panel.css']:
+for name in ['design-tokens.css','math-lab.css','agent-panel.css','component-agent.css']:
     mathlab=mathlab.replace('<link rel="stylesheet" href="'+name+'">','<style>'+(dist/name).read_text()+'</style>')
-for name in ['glyph-player.js','glyph-program.js','glyph-flow.js','math-examples.js','math-lab.js','program-preview.js','program-workshop.js','agent-panel.js']:
+for name in ['glyph-player.js','glyph-program.js','glyph-flow.js','math-examples.js','math-lab.js','program-preview.js','program-workshop.js','agent-panel.js','glyph-agent.js','component-agent-ui.js']:
     mathlab=mathlab.replace('<script defer src="'+name+'"></script>','')
 mathlab=mathlab.replace('</head>','<script>window.GLYPH_PROGRAM_RUNTIME='+json.dumps(json.loads((dist/'program-runtime.json').read_text())).replace('<','\\u003c')+';window.GLYPH_PROGRAM_SEED='+json.dumps((dist/'program-seed.js').read_text()).replace('<','\\u003c')+';</script></head>')
-mathlab=mathlab.replace('</body>',''.join('<script>'+(dist/name).read_text().replace('</script','<\\/script')+'</script>' for name in ['glyph-player.js','glyph-program.js','glyph-flow.js','math-examples.js','math-lab.js','program-preview.js','program-workshop.js','agent-panel.js'])+'</body>')
+mathlab=mathlab.replace('</body>',''.join('<script>'+(dist/name).read_text().replace('</script','<\\/script')+'</script>' for name in ['glyph-player.js','glyph-program.js','glyph-flow.js','math-examples.js','math-lab.js','program-preview.js','program-workshop.js','agent-panel.js','glyph-agent.js','component-agent-ui.js'])+'</body>')
 mathlab=mathlab.replace('href="/"','href="Glyph%20Studio.html"').replace('href="/flow"','href="Glyph%20Flow%20-%20Components.html"').replace('href="/design"','href="Glyph%20-%20Design%20System.html"').replace('href="/presets"','href="Glyph%20-%20Preset%20Workshop.html"').replace('href="math-examples.js"','href="https://github.com/bananawalnut/glyph-studio/blob/main/dist/math-examples.js"')
 (root/'Glyph - Math Lab.html').write_text(mathlab)
 for name in ['Glyph Studio.html','Glyph Flow - Components.html','Glyph - Design System.html','Glyph - Preset Workshop.html']:

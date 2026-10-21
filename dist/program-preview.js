@@ -12,7 +12,7 @@ function previewHost(runtime,source){
  worker.onmessage=e=>{if(stopped)return;const m=e.data;try{
  if(m.type==='error'){stop(String(m.message).slice(0,1000));return;}
  if(m.type==='ready'){ready={audit:m.audit,signature:m.signature,state:m.state};return;}
- if(m.type==='receipt'){report({type:'receipt',method:m.method,result:m.result,state:m.state});return;}
+ if(m.type==='receipt'){report({type:'receipt',requestId:m.requestId,method:m.method,result:m.result,state:m.state});return;}
  if(m.type!=='frame')return;
  clearTimeout(timeout);pending=false;
  if(!Array.isArray(m.buffers)||m.buffers.length>16||m.buffers.reduce((n,p)=>n+(p[1]?.length||0),0)>72000||!Array.isArray(m.marks)||m.marks.length>1024)throw Error('Preview frame budget exceeded.');
@@ -24,7 +24,7 @@ function previewHost(runtime,source){
  }catch(error){stop(String(error.message).slice(0,1000));}};
  window.addEventListener('message',e=>{if(e.source!==parent||!e.data||e.data.glyphProgramCommand!==1||stopped)return;const m=e.data;
  if(m.type==='pause'){paused=!!m.paused;return;}
- if(m.type==='invoke'){const next={type:'invoke',method:m.method,payload:m.payload,phase};if(pending){queued=next;return;}send(next);}
+ if(m.type==='invoke'){const next={type:'invoke',requestId:m.requestId,method:m.method,payload:m.payload,phase};if(pending){queued=next;return;}send(next);}
  });
  function tick(now){if(stopped)return;requestAnimationFrame(tick);if(paused||document.hidden||pending||now-last<1000/30)return;last=now;phase=(now/1000%duration)/duration;send({type:'frame',phase});}requestAnimationFrame(tick);send({type:'init',source});
  window.addEventListener('pagehide',()=>{clearTimeout(timeout);worker.terminate();renderer.destroy();});
