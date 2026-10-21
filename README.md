@@ -170,3 +170,8 @@ npm run connect:voice -- --python /absolute/path/to/venv/bin/python --model /abs
 Open [Math & logic lab](http://127.0.0.1:8788/math) for code-defined surfaces, mapped paths, independent composites and a typed component that deforms geometry on receipt. The optional `glyph-program.js` API accepts ordinary functions, analytic/numeric derivatives, nested mat4 transforms, deformations and direct typed-buffer writers. Component interfaces own their methods, handlers, organizers and custom transition callbacks. Registered behaviors can declare typed `params` rather than only use predefined setting names.
 
 Read [the programmer API](docs/programmable-geometry.md) and [authored examples](dist/math-examples.js). These are application modules a coding agent can edit and test. Existing scene/preset JSON stays compatible; it does not serialize or execute function bodies. CPU math sampling feeds the existing WebGL2 instancing pipeline, with Canvas fallback. Custom Wasm writers can fill the buffer ABI; arbitrary JS is not automatically compiled into Wasm/GLSL.
+
+
+### Prompt → program → reusable preset
+
+Open `/math` to ask the Studio Designer (local Hermes or Codex) for custom geometry **and component logic**. Run the isolated source preview, exercise its discovered typed methods, then save a new code preset or update a loaded one. The source editor supports direct edits and repair prompts. Saved presets keep surfaces, paths, composites, interfaces, handlers, organizers and transitions together; export them as ES modules. See [source authoring and isolation](docs/programmable-geometry.md#prompt-authored-source-presets). Existing JSON presets and live scenes remain separate.

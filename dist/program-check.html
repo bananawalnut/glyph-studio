@@ -1,0 +1,15 @@
+<!doctype html><meta charset="utf-8"><title>Source preset checks</title><script src="program-preview.js"></script><h1>Source preview integration checks</h1><pre id="results"></pre><div id="preview"></div><script>
+(async()=>{const out=document.getElementById('results');let resolve,events=[];const preview=new GlyphProgramPreview(document.getElementById('preview'),e=>{events.push(e);if(resolve)resolve(e);});
+const wait=async(type)=>{const start=performance.now();while(performance.now()-start<6500){const found=events.find(e=>e.type===type);if(found){events.splice(events.indexOf(found),1);return found;}await new Promise(r=>{resolve=r;setTimeout(r,80);});resolve=null;}throw Error('Missing '+type);};
+const pass=s=>out.textContent+='PASS '+s+'\n',assert=(v,s)=>{if(!v)throw Error(s);};
+try{
+const seed=await fetch('program-seed.js').then(r=>r.text());await preview.run(seed);let ready=await wait('ready');assert(ready.audit.points===1408&&ready.signature.methods.sculpt,'source initialization');pass('worker source creates finite WebGL geometry and typed interface');
+preview.command({type:'invoke',method:'sculpt',payload:.5});let receipt=await wait('receipt');assert(receipt.state.amplitude===.5&&receipt.result===.5,'typed result');pass('authored handler returns typed result and changes geometry parameters + organizer');
+const secure=seed.replace("const {Surface", "let network='pending'; fetch('http://127.0.0.1:8790/api/state').then(()=>network='allowed').catch(()=>network='blocked');\n  const {Surface").replace('methods:{sculpt:',"methods:{check:{input:{type:'null'},output:{type:'string'},handle:s=>({state:s,result:typeof window+'/'+typeof GLYPH_BRIDGE+'/'+network})},sculpt:");
+events=[];await preview.run(secure);await wait('ready');await new Promise(r=>setTimeout(r,150));preview.command({type:'invoke',method:'check',payload:null});receipt=await wait('receipt');assert(receipt.result==='undefined/undefined/blocked','isolation '+receipt.result);assert(document.querySelector('iframe').getAttribute('sandbox')==='allow-scripts','opaque sandbox');pass('worker has no DOM/studio credential; CSP blocks loopback networking inside opaque sandbox');
+events=[];await preview.run('function create(){while(true){}}');const error=await wait('error');assert(error.message.includes('compute budget'),'watchdog');pass('infinite source loop terminated without freezing host');
+events=[];await preview.run(seed);await wait('ready');preview.command({type:'invoke',method:'sculpt',payload:'wrong'});assert((await wait('error')).message.includes('number'),'input contract');pass('invalid method input rejected');
+events=[];await preview.run(seed);await wait('ready');pass('preview recovers after failures');out.textContent+='ALL PASSED';
+}catch(e){out.textContent+='FAIL '+e.message;}finally{preview.destroy();}
+})();
+</script>

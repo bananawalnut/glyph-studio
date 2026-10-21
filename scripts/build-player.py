@@ -13,5 +13,7 @@ flow='/* Glyph Flow — optional functional content and animated transfers. */\n
 (root/'dist/glyph-flow.js').write_text(flow)
 program='/* Glyph Program — optional parametric geometry and code-defined composition. */\n'+'\n'.join((root/'player'/f).read_text() for f in ['program.js','program-component.js'])
 (root/'dist/glyph-program.js').write_text(program)
+runtime={'player':'\n'.join((root/'player'/f).read_text() for f in ['geometry.js','renderer.js']),'worker':'\n'.join((root/'player'/f).read_text() for f in ['program.js','flow-core.js','program-worker.js'])}
+(root/'dist/program-runtime.json').write_text(json.dumps(runtime))
 sizes={f:{'bytes':(root/'dist'/f).stat().st_size,'gzip_bytes':len(gzip.compress((root/'dist'/f).read_bytes(),mtime=0))} for f in ['glyph-player.js','glyph-core.wasm','glyph-flow.js','glyph-design.js','presets.js','glyph-program.js']}
 (root/'dist/player-sizes.json').write_text(json.dumps(sizes,indent=2)+'\n');print(json.dumps(sizes))

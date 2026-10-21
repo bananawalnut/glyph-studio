@@ -1,4 +1,5 @@
 """Build portable releases using only files contained in this repository."""
+import json
 import argparse
 from pathlib import Path
 import shutil
@@ -58,11 +59,12 @@ workshop=workshop.replace('</body>',''.join('<script>'+(dist/name).read_text()+'
 workshop=workshop.replace('href="/"','href="Glyph%20Studio.html"').replace('href="/flow"','href="Glyph%20Flow%20-%20Components.html"').replace('href="/design"','href="Glyph%20-%20Design%20System.html"')
 (root/'Glyph - Preset Workshop.html').write_text(workshop)
 mathlab=(dist/'math-lab.html').read_text()
-for name in ['design-tokens.css','math-lab.css']:
+for name in ['design-tokens.css','math-lab.css','agent-panel.css']:
     mathlab=mathlab.replace('<link rel="stylesheet" href="'+name+'">','<style>'+(dist/name).read_text()+'</style>')
-for name in ['glyph-player.js','glyph-program.js','glyph-flow.js','math-examples.js','math-lab.js']:
+for name in ['glyph-player.js','glyph-program.js','glyph-flow.js','math-examples.js','math-lab.js','program-preview.js','program-workshop.js','agent-panel.js']:
     mathlab=mathlab.replace('<script defer src="'+name+'"></script>','')
-mathlab=mathlab.replace('</body>',''.join('<script>'+(dist/name).read_text()+'</script>' for name in ['glyph-player.js','glyph-program.js','glyph-flow.js','math-examples.js','math-lab.js'])+'</body>')
+mathlab=mathlab.replace('</head>','<script>window.GLYPH_PROGRAM_RUNTIME='+json.dumps(json.loads((dist/'program-runtime.json').read_text())).replace('<','\\u003c')+';window.GLYPH_PROGRAM_SEED='+json.dumps((dist/'program-seed.js').read_text()).replace('<','\\u003c')+';</script></head>')
+mathlab=mathlab.replace('</body>',''.join('<script>'+(dist/name).read_text().replace('</script','<\\/script')+'</script>' for name in ['glyph-player.js','glyph-program.js','glyph-flow.js','math-examples.js','math-lab.js','program-preview.js','program-workshop.js','agent-panel.js'])+'</body>')
 mathlab=mathlab.replace('href="/"','href="Glyph%20Studio.html"').replace('href="/flow"','href="Glyph%20Flow%20-%20Components.html"').replace('href="/design"','href="Glyph%20-%20Design%20System.html"').replace('href="/presets"','href="Glyph%20-%20Preset%20Workshop.html"').replace('href="math-examples.js"','href="https://github.com/bananawalnut/glyph-studio/blob/main/dist/math-examples.js"')
 (root/'Glyph - Math Lab.html').write_text(mathlab)
 for name in ['Glyph Studio.html','Glyph Flow - Components.html','Glyph - Design System.html','Glyph - Preset Workshop.html']:

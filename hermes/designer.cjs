@@ -3,7 +3,7 @@ const fs=require('node:fs'),path=require('node:path'),E=require('../dist/scene.j
 const DS=require('../dist/glyph-design.js');
 const ROOT=path.join(__dirname,'plugin','glyph-studio'),directory=path.join(ROOT,'designer');
 const profile=()=>JSON.parse(fs.readFileSync(path.join(directory,'profile.json'),'utf8'));
-function toolNames(provider,target){const names=profile().tools[provider];return !target?names:names.filter(n=>target==='flow'?n.startsWith('glyph_flow_'):!n.startsWith('glyph_flow_'));}
+function toolNames(provider,target){if(target==='program')return [];const names=profile().tools[provider];return !target?names:names.filter(n=>target==='flow'?n.startsWith('glyph_flow_'):!n.startsWith('glyph_flow_'));}
 function context(prompt,provider,target){const p=profile(),skills=p.skills.filter(s=>target==='flow'?s.id==='glyph-flow':(s.id!=='glyph-flow'&&(s.always||[s.id,...s.triggers].some(t=>new RegExp('(?<!\\w)'+t.replace(/[.*+?^${}()|[\]\\]/g,'\\$&')+'(?!\\w)','i').test(prompt))))).map(s=>s.id);const text=[...['SOUL.md','WORKFLOW.md'].map(n=>fs.readFileSync(path.join(directory,n),'utf8')),'RUNTIME: '+p.execution[provider],...skills.map(id=>fs.readFileSync(path.join(ROOT,'skills',id,'SKILL.md'),'utf8'))].join('\n\n');return {profile:p.id,name:p.name,skills,text};}
 const ANIMALS={
  'pisces':{name:'Paired fish',motion:'Two offset body waves; a symbolic pair, not a separate species.',source:'https://pubmed.ncbi.nlm.nih.gov/34853171/'},
@@ -14,7 +14,7 @@ const ANIMALS={
  'betta':{name:'Betta',motion:'Restrained body wave and independently delayed long-fin membranes; membrane lag is art directed.',source:'https://pubmed.ncbi.nlm.nih.gov/34853171/'}
 };
 function library(args={}){const kind=args.kind||'profile',id=args.id;if(id!==undefined&&typeof id!=='string')throw Error('id must be a string');
- if(kind==='program')return {programmerAPI:fs.readFileSync(path.join(__dirname,'..','docs','programmable-geometry.md'),'utf8'),exampleSource:fs.readFileSync(path.join(__dirname,'..','dist','math-examples.js'),'utf8'),editor:'/math',execution:'Application module code, authored in the repository. The restricted prompt adapter does not execute source strings.'};
+ if(kind==='program')return {programmerAPI:fs.readFileSync(path.join(__dirname,'..','docs','programmable-geometry.md'),'utf8'),exampleSource:fs.readFileSync(path.join(__dirname,'..','dist','math-examples.js'),'utf8'),editor:'/math',execution:'Self-contained source programs can be authored from prompts at /math, then run in an isolated worker and saved as code presets. Scene and flow recipe tools remain data-only.'};
  if(kind==='design-system')return {designSystem:DS.catalog()};
  if(['object','motion','material','behavior'].includes(kind)){if(!id)return {[kind+'s']:DS.catalog()[{object:'objects',motion:'motions',material:'materials',behavior:'behaviors'}[kind]]};const entry=DS.preset(kind,id);return {preset:entry,...(kind==='object'?{scene:DS.scene({object:id}),options:['object','motions','material','color','text','seed','duration','id']}:{}),applied:false};}
  if(kind==='profile')return {profile:profile()};
