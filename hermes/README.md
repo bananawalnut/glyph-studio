@@ -1,6 +1,6 @@
 # Glyph Studio for Hermes
 
-This bundle contains a native Hermes plugin, a reusable skill, and a local scene bridge. An agent turns conversational briefs into function calls; the bridge validates changes and updates the browser. The Zenith prompt panel uses an on-device model through a dedicated Hermes home. It does not copy credentials or change your active Hermes profile.
+This bundle contains a native Hermes plugin, a reusable skill, and a local scene bridge. An agent turns conversational briefs into function calls; the bridge validates changes and updates the browser. The Local Hermes option in the studio and Zenith prompt panels uses an on-device model through a dedicated Hermes home. A separate Codex option can use your signed-in Codex CLI. It does not copy credentials or change your active Hermes profile.
 
 The native registration and skill interfaces were checked against the installed Hermes **0.20.0** runtime. Development checkout reference: `7e8f50a14176e02b514631b0b04470acaadae32a`. See the [official plugin guide](https://hermes-agent.nousresearch.com/docs/guides/build-a-hermes-plugin).
 
@@ -40,6 +40,10 @@ node hermes/bridge.cjs --port 8788
 Open the printed loopback URL. This is the connected composer; the standalone HTML remains an offline editor. The server prints the path to `.runtime/connection.json`, but never its token. Scene state is saved to `.runtime/scene.json`.
 
 The connection file is a private local credential. Keep `.runtime/` out of repositories and exports. The browser uses the same-origin credential automatically. Native clients read the connection file on each call, so bridge restarts do not require reinstalling the plugin.
+
+## Optional Codex designer
+
+Run `npm run connect:codex`, then choose **Codex** in either prompt panel. This uses your installed Codex CLI and existing sign-in, separately from the Hermes worker and profile. Codex sends the prompt and current built recipe to its hosted model. It returns a scene proposal; the bridge validates it and rejects stale revisions before an atomic apply. See [setup and API compatibility](../docs/codex-connection.md). The Local Hermes option remains on-device and loopback-only.
 
 ## Attach a local agent or profile
 

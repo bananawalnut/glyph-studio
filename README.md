@@ -60,6 +60,21 @@ This starts the same editor with an on-device Hermes designer. It requires an in
 
 The Zenith prompt box supports Apply change, Stop, and Undo. The worker exposes only seven scene functions, uses a dedicated `.hermes-home`, and blocks non-loopback network connections. It does not use your hosted model credentials. Each prompt reads the current scene; chat history is not retained. Local inference may take about a minute, especially for the first prompt.
 
+## Prompt changes with Codex
+
+Codex is an additional designer in the studio’s **Prompt** tab and the Zenith prompt panel. Local Hermes remains available in the same **Designer** picker. With an installed, signed-in Codex CLI:
+
+```bash
+npm run connect:codex
+npm run dev
+```
+
+Use `npm run dev:agent` instead to run both Codex and on-device Hermes. The connection command checks Codex sign-in and stores only its executable path and optional model choice in private `.runtime/codex.json`; it does not copy credentials or alter your Codex configuration. Add `-- --binary /absolute/path/to/codex` if it is not on PATH. An optional `-- --model MODEL_ID` selects a model you already have access to; otherwise the CLI default is used.
+
+Selecting Codex sends the prompt and current built scene to your signed-in Codex account. It proposes a complete scene in a bounded, ephemeral CLI run. The local bridge validates that scene and applies it atomically only if its starting revision is still current. Codex gets no bridge token; its run disables shell, browser, apps, plugins and hooks and uses a read-only sandbox. Failed, cancelled or stale proposals do not mutate the scene. Undo rejects intervening edits after a Codex change. Both designers share one job slot so they cannot edit simultaneously.
+
+Requests without a `provider` still use Hermes, preserving older clients. The on-device Hermes worker remains loopback-only. The v2 recipe format and animal components are unchanged. See [Codex connection and request contract](docs/codex-connection.md).
+
 ## Scene model
 
 - **Surfaces:** sphere, torus, cylinder, plane, or wave.

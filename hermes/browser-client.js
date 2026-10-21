@@ -1,4 +1,4 @@
-// Same-origin browser peer for the local Hermes scene bridge.
+// Same-origin browser peer for the local local scene bridge.
 (()=>{
  'use strict';
  if(!window.GLYPH_BRIDGE)return;
@@ -14,7 +14,7 @@
  function apply(data,force=false){
   if(!force&&api.hasUnbuiltChanges()){conflict(data);return;}
   syncing=true;
-  try{api.setScene(data.scene);api.setView(data.view);revision=data.revision;viewRevision=data.view.revision;lastScene=JSON.stringify(data.scene);pending=null;pull.hidden=true;push.hidden=true;label('Hermes bridge connected · revision '+revision);}
+  try{api.setScene(data.scene);api.setView(data.view);revision=data.revision;viewRevision=data.view.revision;lastScene=JSON.stringify(data.scene);pending=null;pull.hidden=true;push.hidden=true;label('Scene bridge connected · revision '+revision);}
   finally{syncing=false;}
  }
  async function view(){
@@ -29,7 +29,7 @@
   try{
    while(queued){const candidate=queued;queued=null;
     if(JSON.stringify(candidate)===lastScene)continue;
-    const data=await request('glyph_studio_apply',{scene:candidate,expected_revision:revision});revision=data.revision;viewRevision=data.view.revision;lastScene=JSON.stringify(candidate);label('Hermes bridge connected · revision '+revision);
+    const data=await request('glyph_studio_apply',{scene:candidate,expected_revision:revision});revision=data.revision;viewRevision=data.view.revision;lastScene=JSON.stringify(candidate);label('Scene bridge connected · revision '+revision);
    }
   }catch(e){queued=null;if(e.code==='revision_conflict'){try{const latest=await request('glyph_studio_read',{});conflict(latest);}catch{label('Bridge offline · local scene preserved');}}else label(e.message+' · local scene preserved');}
   finally{publishing=false;}
@@ -47,5 +47,5 @@
   }catch(e){label('Bridge offline · local scene preserved');}
   finally{busy=false;}
  }
- label('Connecting to local Hermes bridge…');poll();setInterval(()=>{if(!document.hidden)poll();},500);
+ label('Connecting to local scene bridge…');poll();setInterval(()=>{if(!document.hidden)poll();},500);
 })();

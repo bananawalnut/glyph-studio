@@ -22,10 +22,10 @@ skill=hermes/'plugin'/'glyph-studio'/'skills'/'glyph-studio'
 for source,name in [('agent-guide.txt','scene-contract.txt'),('scene.schema.json','scene.schema.json'),('example-scene.json','example-scene.json')]:
     shutil.copyfile(dist/source,skill/'references'/name)
 shutil.copyfile(hermes/'plugin'/'glyph-studio'/'client.py',skill/'scripts'/'client.py')
-html=(dist/'index.html').read_text().replace('<link rel="stylesheet" href="style.css">','<style>'+(dist/'style.css').read_text()+'</style>')
-for name in ['scene.js','glyph-player.js','app.js']:
+html=(dist/'index.html').read_text().replace('<link rel="stylesheet" href="agent-panel.css">','<style>'+(dist/'agent-panel.css').read_text()+'</style>').replace('<link rel="stylesheet" href="style.css">','<style>'+(dist/'style.css').read_text()+'</style>')
+for name in ['scene.js','glyph-player.js','app.js','agent-panel.js']:
     html=html.replace('<script defer src="'+name+'"></script>','')
-html=html.replace('</body>',''.join('<script>'+(dist/name).read_text()+'</script>' for name in ['scene.js','glyph-player.js','app.js'])+'</body>')
+html=html.replace('</body>',''.join('<script>'+(dist/name).read_text()+'</script>' for name in ['scene.js','glyph-player.js','app.js','agent-panel.js'])+'</body>')
 html=html.replace('href="components.html"','href="https://github.com/bananawalnut/glyph-studio/blob/main/docs/web-components.md"')
 html=html.replace('href="agent-guide.txt"','href="data:text/plain;charset=utf-8,'+quote((dist/'agent-guide.txt').read_text())+'"').replace('href="./"','href="Glyph%20Studio.html"')
 html=html.replace('href="betta.html"','href="Betta%20-%20Glyph%20Study.html"').replace('href="life.html"','href="Anima%20-%20Living%20Glyph%20Studies.html"')
@@ -41,7 +41,7 @@ for name in ['betta-geometry.js','life-geometry.js','life-motion.js','life-playe
 life=life.replace('</body>',''.join('<script>'+(dist/name).read_text()+'</script>' for name in ['betta-geometry.js','life-geometry.js','life-motion.js','life-player.js','life-lab.js'])+'</body>')
 life=life.replace('href="/"','href="Glyph%20Studio.html"').replace('href="betta.html"','href="Betta%20-%20Glyph%20Study.html"')
 (root/'Anima - Living Glyph Studies.html').write_text(life)
-(root/'Zenith Open Consultancy.html').write_text((dist/'zenith.html').read_text().replace('<script defer src="scene.js"></script>','<script>'+(dist/'scene.js').read_text()+'</script>').replace('<script defer src="glyph-player.js"></script>','<script>'+(dist/'glyph-player.js').read_text()+'</script>'))
+(root/'Zenith Open Consultancy.html').write_text((dist/'zenith.html').read_text().replace('<script defer src="scene.js"></script>','<script>'+(dist/'scene.js').read_text()+'</script>').replace('<script defer src="glyph-player.js"></script>','<script>'+(dist/'glyph-player.js').read_text()+'</script>').replace('<link rel="stylesheet" href="agent-panel.css">','<style>'+(dist/'agent-panel.css').read_text()+'</style>').replace('<script defer src="agent-panel.js"></script>','<script>'+(dist/'agent-panel.js').read_text()+'</script>'))
 shutil.copyfile(dist/'presets'/'zenith.scene.json',root/'zenith-open-consultancy.scene.json')
 (root/'Glyph Studio - Read me.txt').write_text('Run the source with npm run dev, or npm run dev:agent for on-device Hermes.\nSee glyph-studio/README.md for setup. Standalone HTML works offline without the agent.\n')
 def public(file):
