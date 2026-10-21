@@ -32,6 +32,7 @@ npm run dev
 - Composer: http://127.0.0.1:8788/
 - Zenith: http://127.0.0.1:8788/zenith
 - Betta study: http://127.0.0.1:8788/betta
+- Anima animal lab: http://127.0.0.1:8788/animals
 
 The server binds to `127.0.0.1` only. Edit `dist/` and refresh the page. The authenticated local bridge saves the working scene in `.runtime/scene.json`; a first run starts with the Zenith preset. Both views show the same live scene. Choose another preset in the composer to explore the other geometries.
 
@@ -42,6 +43,10 @@ A separate violet glyph fish, with a rounded body, a broad caudal fan, and indep
 `dist/betta-geometry.js` generates 4,755 seeded glyph instances from an ellipsoid, a scalloped fan and cubic Bézier fin patches. `dist/betta.js` animates those static instances in GLSL with one WebGL2 draw call, a 30 fps ceiling, a 12-second loop and a device pixel ratio capped at 1.5. The animation sleeps while paused or hidden. There are no libraries, model calls or image assets. It needs WebGL2.
 
 This study has its own procedural geometry and does not change the v2 recipe contract or your working Zenith scene. The Hermes scene functions currently edit the composer and Zenith recipes; the fish is edited in its two source files. Seed and frame reproduce geometry and motion; pixels also depend on the font, browser and viewport.
+
+## Anima animals
+
+The [animal lab](http://127.0.0.1:8788/animals) builds out Anima’s six identities: paired fish, jellyfish, ray, koi, sea angel and betta. Each has its own anatomy and swimming pattern, with hover/roaming behavior, three detail levels, glyph/particle surfaces, directional light and a PNG frame export. The reusable `<glyph-animal>` component runs independently of the editor and agent. See [embedding, movement research and limitations](docs/animal-studies.md). These are kinematic interpretations; the implementation does not simulate fluid forces.
 
 ## Prompt changes with local Hermes
 
@@ -79,7 +84,7 @@ npm test
 npm run build
 ```
 
-Exports are written to ignored `releases/`: standalone composer, Zenith and Betta HTML, the Zenith JSON recipe, and portable source/plugin ZIPs. `python3 build.py --output /absolute/directory` chooses another export location. Building needs only standard-library Python.
+Exports are written to ignored `releases/`: standalone composer, Zenith, Betta and Anima animal HTML, the Zenith JSON recipe, and portable source/plugin ZIPs. `python3 build.py --output /absolute/directory` chooses another export location. Building needs only standard-library Python.
 
 Optional native plugin validation, using Hermes' virtualenv Python:
 
