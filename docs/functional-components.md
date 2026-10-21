@@ -79,7 +79,7 @@ The input contract and organizer must both accept a receive operation before the
 
 1. Validate output against the sender and input against the receiver, then capture an immutable payload and receiver definition epoch.
 2. Animate a glyph representation of that payload through the local flow world. The actual JSON stays intact; glyph trails are visual marks rather than independently delivered fragments.
-3. At arrival, recheck the receiver definition and input, run its receiving method against current state, and validate state, method result and organizer output.
+3. After arrival and any configured receiving animation, recheck the receiver definition and input, run its receiving method against current state, and validate state, method result and organizer output.
 4. Commit state/revision once, emit a receipt and resolve the transfer promise. Concurrent arrivals are reduced sequentially in arrival order.
 
 Source state is preserved: this is **copy delivery**, not ownership transfer. Use an application action after a successful receipt if the sender should relinquish content. No implicit source removal, cross-component rollback, network delivery or durable transaction is claimed.
@@ -114,6 +114,29 @@ There is one Canvas 2D overlay per flow and one shared requestAnimationFrame sch
 | `glyph-state` | Bubbles with copied value and state revision |
 | `glyph-transfer` | Bubbles with id/endpoints/status; settled receipt adds receiving revision/reason |
 | `glyph-flow-error` | Bubbles when a responsive layout cannot be recomputed |
+
+## Form events, travel and receiving behavior
+
+The `/flow` word form is a native HTML form above Source field. Submit maps a word to a typed record (`{id, title: word, category: 'SIGNAL'}`) and calls `source.api.add` with an origin measured from the input's actual DOM bounds. Each word gets a fresh ID. The form supports Enter, validation and one pending word at a time. Its **Interaction settings** edit the receiving method's travel style, receiving style and process duration while preserving current content.
+
+A method can define presentation independently of its state handler:
+
+```js
+add: {
+  input: record, output: record,
+  interaction: {
+    travel: 'hop', receive: 'pixel-sort',
+    duration: 0.9, textField: 'title'
+  },
+  handle: (state, row) => ({state: [...state, row], result: row})
+}
+```
+
+The interaction runs **submit → travel → receive → commit → organize**. `hop` releases letters at staggered times along the routed carrier's position history; small quantized hops and shadows make them feel pixel-like. All letters converge before the receiving phase. `pixel-sort` reassembles them in a small stepped animation at the projected receiving mark, then the handler adds the intact record and the organizer assigns its place. This name refers to visual reassembly; application data remains in its handler-defined order. Other methods can use `stream` and/or `none`. Duration is bounded to 0..3 simulated seconds. textField selects one top-level string field; a string input supplies its own text. Without text configuration, transport keeps its JSON glyph representation.
+
+`glyph-transfer` adds an optional `processing` status between `started` and a terminal receipt. `flow.snapshot.flights` exposes `phase`, resolved letters and normalized interaction settings. Receiving state remains unchanged throughout travel and processing. Cancellation, changed receiving definitions and invalid final handler results still reject without a commit. Reduced-motion mode bypasses both animation phases and delay. These are visual lifecycle stages around a synchronous pure handler, not asynchronous background jobs or distributed transactions.
+
+`new GlyphFlow.Document(element,{insetTop:130})` reserves a top rail for programmer-authored controls, projecting percentage boxes into the remaining height. `workspace.load` emits `document`; applications can reattach their own native form after a new graph is loaded. The word form is application HTML, while interaction metadata belongs to the component interface and can also be edited through designer prompts. Existing saved flows omit this optional metadata and retain stream/immediate behavior. Reload open flow pages after upgrading their bundled validator.
 
 ## Data documents and the prompt designer
 

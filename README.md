@@ -95,7 +95,7 @@ Requests without a `provider` still use Hermes, preserving older clients. The on
 
 [Glyph Flow](http://127.0.0.1:8788/flow) now supports programmer-owned named methods and typed results, such as `source.api.add(record)`. Components own state, handlers, contracts, native HTML and visual organizers. The shared transport animates method input and commits on arrival. Programmer subclasses and custom pure handlers work through the same API.
 
-The flow page includes a method console, a JSON flow editor, and prompt editing with Hermes or Codex. Designers can create/edit components, interfaces, contracts, layouts and connections using registered strategies, or queue animated method calls. Flow edits are staged and revision-checked; a call is delivered only after browser receipt. The saved scene remains separate. See [interfaces, protocol, document format and boundaries](docs/functional-components.md).
+The flow page includes a native word form with hopping letters and a configurable receiving animation, a method console, a JSON flow editor, and prompt editing with Hermes or Codex. Designers can create/edit components, interfaces, contracts, layouts and connections using registered strategies, or queue animated method calls. Flow edits are staged and revision-checked; a call is delivered only after browser receipt. The saved scene remains separate. See [interfaces, protocol, document format and boundaries](docs/functional-components.md).
 
 ## Scene model
 

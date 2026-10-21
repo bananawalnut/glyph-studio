@@ -2,7 +2,7 @@ GLYPH FLOW DOCUMENT v1
 Read glyph_flow_read for the current complete document, revision and strategy registry. Keep content state when editing configuration. Use only registered strategies; unknown fields/names fail validation.
 
 Root: {version:1,title,contracts:{name:schema},components:[],connections:[],obstacles:[]}.
-Component: {id,title,position:{x,y,width,height},spin,stateContract,initial,state,methods:{name:{input,output,handler:{type,...options}}},output:{type,contract},layout:{type,...options}}.
+Component: {id,title,position:{x,y,width,height},spin,stateContract,initial,state,methods:{name:{input,output,handler:{type,...options},interaction?}},output:{type,contract},layout:{type,...options}}.
 Contracts are names in contracts or inline closed schemas. Schema types: object/array/string/number/integer/boolean/null. Object schemas need properties and additionalProperties:false. Optional required; array items/minItems/maxItems; string minLength/maxLength; numeric minimum/maximum; enum. No $ref/pattern/union/code. Max 64KiB JSON, 10 components, 32 contracts, 16 methods/component, 24 connections, 3 obstacles. Coordinates are percentages, every box fits 0..100. Component width/height >=8. spin is radians/sec in -2..2.
 
 Handler types:
@@ -20,3 +20,5 @@ Layouts: sphere/grid/helix; optional key (default id), label (default title), co
 Connection: {id,title,from,to,method,mapping:{type:'identity'|'first'|'batch',size?}}. batch requires size1..24. from/to are distinct component ids; method exists on receiver. Mapping validates against current data. Obstacle: {id,title,position:{x,y,width,height}}.
 
 Protocol method call: {id,component,method,payload}. A programmer defines the component interface; add is an example name, not a global requirement. Calls animate and mutate the receiver only after arrival. Staged/queued is not delivered. The browser receipt is authoritative for delivery. No arbitrary JavaScript is executed from a flow document.
+
+Optional method interaction: {travel:"hop"|"stream",receive:"pixel-sort"|"none",duration:0..3,textField:"title"}. Defaults are stream/none; duration defaults to 0.9 simulated seconds, used only for a receive effect. textField names one top-level payload string, or a string payload supplies its own text. hop animates those code points along the routed path. pixel-sort is a visual reassembly phase before the typed handler commits; it does not sort application data. Lifecycle: started -> processing (optional) -> arrived/rejected/cancelled. Processing can be cancelled without a state mutation. Reduced motion skips animation and delay. Change a method's interaction with a component merge patch, preserving all other method fields and state. The word form maps a native submit event to source.add({id,title:word,category:"SIGNAL"}); interaction settings belong to this receiving method.
