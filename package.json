@@ -10,7 +10,7 @@
     "dev": "node hermes/bridge.cjs --port 8788 --preset zenith",
     "dev:agent": "python3 hermes/start.py",
     "build": "python3 build.py",
-    "test": "node test-scene.js && node test-surfaces.js && node test-player.cjs && node hermes/test-bridge.cjs && node hermes/test-agent-jobs.cjs && python3 hermes/test-attach.py",
+    "test": "node test-scene.js && node test-surfaces.js && node test-betta.cjs && node test-player.cjs && node hermes/test-bridge.cjs && node hermes/test-agent-jobs.cjs && python3 hermes/test-attach.py",
     "build:wasm": "python3 scripts/build-player.py --rust",
     "bench:geometry": "node scripts/bench-geometry.cjs"
   }
