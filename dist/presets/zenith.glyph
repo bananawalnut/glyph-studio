@@ -1,0 +1,3 @@
+loop 16s; seed 2001
+shell: sphere; radius 1.3; rotate y 1; hold; white; opacity 0.4; size 13; means "sparse cross shell"
+signal: surface; radius 1.3; latitude -15; text "ZENITH / OPEN CONSULTANCY / "; rotate y -1; hold; cyan; size 13; means "Zenith identity / open consultancy"

@@ -1,0 +1,192 @@
+SHARED SURFACES / ADDITIVE V2 EXTENSION
+
+The renderer now accepts an optional scene.surfaces array (0..8 hosts).
+Existing v2 recipes without surfaces continue loading unchanged. Existing
+sphere, surface, bezier and rain object types remain supported.
+
+A surface defines shape. A mapped object defines a glyph pattern on that
+shape. Several objects may reference the same surface by stable id. Glyph
+flicker and pattern flow are independent of host rotation. Free Bezier
+ribbons and screen-space rain do not inherit a host's movement.
+
+Surface object (all fields required when supplied):
+{
+  "id":"body", "shape":"torus", "radius":0.95, "tube":0.42,
+  "width":2.6, "height":2.6, "depth":2.6,
+  "transform":{"position":[0,0,0],"rotation":[0,0,0],"scale":1},
+  "motion":{"turns":[1,0,0],"bob":0}
+}
+Shapes: sphere, torus, cylinder, plane, wave.
+Radius: 0.1..2.5. Tube: 0.05..1 and smaller than torus radius.
+Width/height/depth: 0.1..6. Transform limits match objects. Host motion
+supports turns [-8..8 on each axis] and bob [0..1]. A surface is a carrier;
+it has no visible mesh until glyph layers are attached. Surface ids must be
+unique and distinct from object ids. Hosts cannot contain hosts.
+
+Mapped object: retain all existing object fields, with this geometry:
+{
+  "type":"mapped", "radius":1.3, "latitude":20,
+  "points":[[-1.1,-1.1,0],[-1.6,1.2,1],[1.5,-1,-1],[0.9,1.2,0]],
+  "host":"body", "pattern":"band", "count":96,
+  "uvPoints":[[0,0.25],[0.3,0.85],[0.7,0.15],[1,0.75]]
+}
+The mapped layer's radius and points are legacy fields; host dimensions
+control its shape. Pattern: grid, band, scatter, curve. Count: 12..1400.
+Grid count is approximate. Scatter is seeded and uniform in UV, not area.
+Band latitude -85..85 selects V=(latitude+90)/180. A UV curve uses four [u,v]
+control points in 0..1. All mapping happens BEFORE the host transform.
+
+For mapped objects, transform MUST be identity (position and rotation zero,
+scale 1); motion.turns and bob MUST be zero. Rotate or position the surface
+instead. This constraint keeps glyph geometry attached to the actual shape.
+Nonzero flow is supported only for band and curve patterns. Band flow moves
+along U. Curve flow shifts text and color along a stationary surface path.
+Flicker regenerates characters at fixed local positions. Hold uses text for
+bands/curves, crosses for a default grid, stable seeded glyphs for scatter.
+An individual layer can be hidden or rebound to another surface.
+
+Mapping coordinates:
+Sphere: U is longitude, V runs south to north. Torus: U circles the main
+ring and V circles the tube. Cylinder: U circles the side wall and V runs
+bottom to top (no end caps). Plane/wave: U runs left to right and V bottom
+to top. Wave depth controls displacement. Bands on open surfaces wrap at
+the boundary when flowing. UV curves can cross periodic seams; choose
+control points intentionally to avoid unintended long routes.
+
+Directive example:
+loop 12s; seed 42
+body: shape torus; radius 0.95; tube 0.42; rotate x 1
+shell: glyphs; on body; pattern grid; count 420; flicker 8; white
+signal: glyphs; on body; pattern band; text "TELEMETRY / "; flow -1; mint
+route: glyphs; on body; pattern curve; uv [[0,0.2],[0.2,0.9],[0.8,0.1],[1,0.8]]; text "ROUTE / "; flow 1; amber
+
+Change body.shape to remap all three layers onto another carrier without
+changing their text, meaning, glyph behavior, or individual flow.
+The example-scene.json file now demonstrates this extension. The schema
+accepts both legacy recipes and this extension. Runtime validation also
+checks host references, uniqueness, torus dimensions and motion constraints.
+
+LEGACY AND COMMON CONTRACT FOLLOWS
+----------------------------------
+
+GLYPH STUDIO / AGENT CONTRACT V2
+
+Purpose
+Turn a user's visual brief into scene data for Glyph Studio. Each named object
+has independent geometry, semantic meaning, transformation, motion, glyph
+behavior, and appearance. Do not put all objects in one spinning group.
+
+Workflow
+1. Read the user's requested objects and what each represents.
+2. Assign a short stable id and a meaning to each object.
+3. Choose geometry, then object motion, then character behavior separately.
+4. Output a complete JSON recipe, or the supported directive language below.
+5. Paste JSON into Agent JSON and Build scene, or call the local browser API
+   window.glyphStudio.setScene(recipe). It validates before changing state.
+6. Export the resulting recipe to preserve the design.
+
+The application has a deterministic directive compiler, not an integrated LLM.
+An external agent can translate unrestricted natural language into this
+contract. No model credentials or paid inference are needed by the composer.
+Unrecognized directives and JSON fields are errors, not silently discarded.
+
+Start with example-scene.json for a complete valid recipe.
+scene.schema.json describes the machine-readable structural contract.
+Runtime validation additionally checks unique ids and geometry/motion rules.
+
+Scene fields (all required)
+version: 2
+seed: integer 0..4294967295
+duration: seconds, 1..120
+fps: integer 1..60
+camera: { yaw: radians -6.283..6.283, pitch: -1.5..1.5, distance: 3.5..10 }
+objects: 1..16 objects
+
+Object fields (all required)
+id: unique [a-z][a-z0-9_-]{0,31}, case insensitive syntax, case sensitive identity
+meaning: semantic description, max 160 characters
+visible: boolean
+geometry: {
+  type: "sphere" | "rain" | "surface" | "bezier",
+  radius: 0.1..2.5,
+  latitude: -85..85 degrees,
+  points: exactly four [x,y,z] control points, coordinates -3..3
+}
+transform: {
+  position: [x,y,z], each -3..3,
+  rotation: [x,y,z], radians -6.283..6.283,
+  scale: 0.1..3
+}
+motion: {
+  turns: [x,y,z], -8..8 turns per scene loop, applied in XYZ order,
+  flow: -8..8, cycles per scene loop,
+  bob: 0..1, vertical sinusoid amplitude, one cycle per loop
+}
+glyphs: {
+  mode: "hold" | "flicker" | "stream",
+  rate: 0..30 character changes per second (quantized to loop ticks),
+  characters: nonempty glyph alphabet, max 128 code units,
+  text: surface-string content, max 128 code units
+}
+material: {
+  color: "white" | "mint" | "cyan" | "amber" | "acid" | "rainbow",
+  opacity: 0..1,
+  size: 3..24 logical glyph / particle size
+}
+
+Geometry and motion semantics
+sphere: a lattice of glyphs on a sphere; hold shows crosses; flicker replaces
+  characters at fixed local XYZ positions. Object rotation is independent.
+surface: a latitude string, constrained to a sphere of the specified radius.
+  hold repeats text. flicker/stream regenerate characters. flow carries text
+  around the latitude; turns rotates the whole object independently.
+bezier: cubic 3D curve P0..P3. P0 and P3 are endpoints, P1/P2 are handles.
+  flow carries color and light pulses along the fixed curve, without moving
+  the curve or wrapping particle positions abruptly from end to start.
+  The present Bezier renderer uses particles; its glyph fields are reserved
+  data and do not alter that particle rendering.
+rain: screen-space background code. It ignores 3D placement/rotation/scale.
+  Use stream for falling light trails; flicker changes characters in place;
+  hold freezes characters. Rain has zero turns/flow/bob (validation enforces).
+  Geometry radius/latitude/points are unused for rain but remain required.
+
+Only surface and bezier support nonzero flow. Glyph stream has falling trails
+only on rain; on other glyph geometry it refreshes characters like flicker.
+Use whole-number turns and flow for an exact geometric loop. Fractional
+values are allowed but produce explicit loop-seam warnings.
+
+Time contract
+For N = round(duration * fps), evaluate phase = frame / N, frame 0..N-1.
+Every object is sampled directly from the same phase; no frame accumulation.
+Characters use seed, stable object name, point index, and a loop-bounded tick.
+Changing one object's motion never changes another object's animation.
+All phase values wrap into [0,1). Phase 1 equals phase 0.
+Pixel-exact exports require a pinned browser, font, canvas size, and renderer.
+The app exports recipes, not video. No video encoder is included.
+
+Directive syntax
+loop 12s; seed 42; fps 30
+shell: sphere; rotate y 1; flicker 8; white; means "spatial field"
+rain: rain; stream 6; mint; opacity 0.24
+path: bezier; points [[-1,-1,0],[-2,1,1],[2,-1,-1],[1,1,0]]; rainbow; flow 1
+signal: surface; latitude 25; text "SIGNAL / "; rotate y -1; mint
+
+One object per line. Separate directives with semicolons. Strings are quoted
+JSON strings; vectors and control points are valid JSON arrays (write 0.5,
+not .5). Lines starting with // are comments. Do not use Markdown fences in
+the application's editor. Available object directives:
+rotate x|y|z NUMBER [turns]; still; flow NUMBER; bob NUMBER; radius NUMBER;
+latitude NUMBER; size NUMBER; opacity NUMBER; scale NUMBER; hidden;
+hold [RATE]; flicker [RATE]; stream [RATE];
+white; mint; cyan; amber; acid; rainbow;
+text "..."; chars "..."; means "...";
+position [x,y,z]; orientation [x,y,z]; points [[...],[...],[...],[...]].
+The scene header also accepts camera {"yaw":0,"pitch":0.12,"distance":5}.
+
+Browser-local APIs
+window.glyphStudio.getScene() -> cloned recipe
+window.glyphStudio.setScene(recipe) -> validate, replace, persist
+window.glyphStudio.compile(script) -> {ok,scene,warnings} or {ok:false,errors}
+window.glyphStudio.getFrame() -> current integer frame
+
+These APIs are browser-local. No remote MCP service is deployed.

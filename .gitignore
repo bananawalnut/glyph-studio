@@ -1,0 +1,14 @@
+.runtime/
+.hermes-home/
+.openai/
+releases/
+node_modules/
+__pycache__/
+*.pyc
+.DS_Store
+.env
+.env.*
+!.env.example
+connection.path
+*.gguf
+*.safetensors

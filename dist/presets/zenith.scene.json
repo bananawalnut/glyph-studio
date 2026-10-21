@@ -1,0 +1,144 @@
+{
+  "surfaces": [],
+  "version": 2,
+  "seed": 2001,
+  "duration": 16,
+  "fps": 30,
+  "camera": {
+    "yaw": 0,
+    "pitch": 0.12,
+    "distance": 5
+  },
+  "objects": [
+    {
+      "id": "shell",
+      "meaning": "sparse cross shell",
+      "visible": true,
+      "geometry": {
+        "type": "sphere",
+        "radius": 1.3,
+        "latitude": 20,
+        "points": [
+          [
+            -1.1,
+            -1.1,
+            0
+          ],
+          [
+            -1.6,
+            1.2,
+            1
+          ],
+          [
+            1.5,
+            -1,
+            -1
+          ],
+          [
+            0.9,
+            1.2,
+            0
+          ]
+        ]
+      },
+      "transform": {
+        "position": [
+          0,
+          0,
+          0
+        ],
+        "rotation": [
+          0,
+          0,
+          0
+        ],
+        "scale": 1
+      },
+      "motion": {
+        "turns": [
+          0,
+          1,
+          0
+        ],
+        "flow": 0,
+        "bob": 0
+      },
+      "glyphs": {
+        "mode": "hold",
+        "rate": 8,
+        "characters": "012345789ABCDEFGHIJKLMNOPQRSTUVWXYZ.:+=*#%@",
+        "text": "SIGNAL / 001 / "
+      },
+      "material": {
+        "color": "white",
+        "opacity": 0.4,
+        "size": 13
+      }
+    },
+    {
+      "id": "signal",
+      "meaning": "Zenith identity / open consultancy",
+      "visible": true,
+      "geometry": {
+        "type": "surface",
+        "radius": 1.3,
+        "latitude": -15,
+        "points": [
+          [
+            -1.1,
+            -1.1,
+            0
+          ],
+          [
+            -1.6,
+            1.2,
+            1
+          ],
+          [
+            1.5,
+            -1,
+            -1
+          ],
+          [
+            0.9,
+            1.2,
+            0
+          ]
+        ]
+      },
+      "transform": {
+        "position": [
+          0,
+          0,
+          0
+        ],
+        "rotation": [
+          0,
+          0,
+          0
+        ],
+        "scale": 1
+      },
+      "motion": {
+        "turns": [
+          0,
+          -1,
+          0
+        ],
+        "flow": 0,
+        "bob": 0
+      },
+      "glyphs": {
+        "mode": "hold",
+        "rate": 8,
+        "characters": "012345789ABCDEFGHIJKLMNOPQRSTUVWXYZ.:+=*#%@",
+        "text": "ZENITH / OPEN CONSULTANCY / "
+      },
+      "material": {
+        "color": "cyan",
+        "opacity": 1,
+        "size": 13
+      }
+    }
+  ]
+}

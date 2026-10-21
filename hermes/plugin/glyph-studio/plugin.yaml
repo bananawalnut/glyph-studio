@@ -1,0 +1,12 @@
+name: glyph-studio
+version: "1.0.0"
+kind: standalone
+description: "Design and edit reproducible Glyph Studio scenes through a local authenticated bridge."
+provides_tools:
+  - glyph_studio_read
+  - glyph_studio_compile
+  - glyph_studio_apply
+  - glyph_studio_update
+  - glyph_studio_add
+  - glyph_studio_remove
+  - glyph_studio_preview

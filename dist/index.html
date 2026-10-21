@@ -1,0 +1,66 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>Glyph Studio — compose motion, object by object</title>
+  <meta name="description" content="Compose reproducible 3D glyph scenes with independent motion, Matrix text, and cubic Bezier paths.">
+  <link rel="stylesheet" href="style.css"><script defer src="scene.js"></script><script defer src="app.js"></script>
+</head>
+<body>
+<header class="masthead"><a class="brand" href="./" aria-label="Glyph Studio home"><span class="logo">G<span>↗</span></span><span>GLYPH<span class="thin"> / STUDIO</span></span></a><span class="subtitle">A small language for moving type.</span><button id="export">Export scene ↗</button></header>
+<main>
+  <section class="composer" aria-labelledby="compose-title">
+    <div class="eyebrow">01 / COMPOSE</div><h1 id="compose-title">Give every object<br>its own direction.</h1>
+    <p class="intro">Choose a surface. Map glyph patterns onto it. Give the shape, the pattern, and its characters their own behavior.</p>
+    <label for="preset" class="label">Start from a scene</label><select id="preset"></select>
+    <div class="tabs" role="tablist" aria-label="Scene input"><button id="script-tab" role="tab" aria-controls="script-panel" aria-selected="true">Directives</button><button id="json-tab" role="tab" aria-controls="json-panel" aria-selected="false">Agent JSON</button></div>
+    <div id="script-panel" role="tabpanel" aria-labelledby="script-tab"><label for="prompt" class="sr-only">Scene directives</label><textarea id="prompt" spellcheck="false"></textarea><p class="hint">One named object per line. This is a deterministic directive compiler; it does not call an AI model.</p></div>
+    <div id="json-panel" role="tabpanel" aria-labelledby="json-tab" hidden><label for="json" class="sr-only">Agent scene JSON</label><textarea id="json" spellcheck="false"></textarea><p class="hint">Paste a complete v2 scene from your agent. Validation runs before the preview changes.</p></div>
+    <button class="primary" id="compile">Build scene <span>↗</span></button>
+    <div id="message" role="status" aria-live="polite"></div>
+    <details><summary>Directive vocabulary</summary><div class="syntax"><p><b>Base surface</b><code>body: shape torus; radius 0.95; tube 0.42</code>sphere · torus · cylinder · plane · wave</p><p><b>Mapped glyph layer</b><code>code: glyphs; on body; pattern grid; flicker 8</code>grid · band · scatter · curve. Multiple layers can share a surface.</p><p><b>Surface text / paths</b><code>label: glyphs; on body; pattern band;<br>text "SIGNAL / "; flow 1</code>Use <code>uv [[0,0.2],[0.3,0.8],[0.7,0.2],[1,0.8]]</code>for a cubic curve mapped onto the surface. U and V run from 0 to 1.</p><p><b>Independent movement</b><code>body: shape cylinder; rotate y 1</code>Rotate the host surface. Flow slides a band or its text along a mapped curve. Flicker changes glyphs at fixed positions.</p><p><b>Free 3D paths</b><code>path: bezier; points [[-1,-1,0],<br>[-2,1,1],[2,-1,-1],[1,1,0]]; rainbow; flow 1</code>A free ribbon does not need a host.</p><p><b>Character behavior</b><code>hold · flicker 8 · stream 6</code>Stream adds falling trails to screen-space rain.</p><p><b>Appearance</b><code>white · mint · cyan · amber · acid · rainbow<br>count 300; size 13; opacity 0.6</code></p></div></details>
+    <a class="agent-link" href="agent-guide.txt" download>Get the agent contract ↓</a>
+  </section>
+  <section class="stage" aria-label="Live scene preview">
+    <div class="stage-head"><span><i class="live-dot"></i> LIVE COMPOSITION</span><span id="scene-meta">1 SURFACE / 5 LAYERS / 12s</span></div>
+    <div class="bridge-bar"><span id="bridge-status">Standalone · Hermes bridge not attached</span><button id="bridge-pull" hidden>Use agent scene</button><button id="bridge-push" hidden>Send built scene</button></div>
+    <div class="canvas-wrap"><canvas id="canvas" role="img" aria-label="A 3D glyph sphere rotates independently of stationary Matrix rain and a flowing rainbow Bezier ribbon."></canvas><div class="stage-caption"><span>XYZ / OBJECT SPACE</span><span id="selected-label">ALL OBJECTS</span></div></div>
+    <div class="transport"><button id="play" aria-pressed="true">Pause</button><output id="time">00.00 / 12s</output><label for="timeline" class="sr-only">Loop position</label><input id="timeline" type="range" min="0" max="359" value="0" step="1"><span class="loop-mark">↻</span></div>
+    <div class="stage-note"><span>Seeded geometry. Independent motion. Frame-addressable time.</span><span id="loop-state">SEAMLESS LOOP</span></div>
+  </section>
+  <aside class="inspector" aria-label="Object controls">
+    <div class="eyebrow">02 / DIRECT</div><h2>Surfaces</h2><div id="surfaces"></div><h2 class="layers-title">Glyph layers</h2><div id="objects"></div>
+    <button id="clear-selection" class="quiet">Show all equally</button>
+    <form id="surface-form" hidden>
+      <div class="inspector-heading"><span class="eyebrow">HOST SURFACE</span><h3 id="surface-name"></h3><p>Changing this shape remaps every attached glyph layer.</p></div>
+      <label>Surface shape<select id="surface-shape"><option value="sphere">Sphere</option><option value="torus">Torus</option><option value="cylinder">Cylinder</option><option value="plane">Plane</option><option value="wave">Wave</option></select></label>
+      <div class="field-row"><label id="surface-radius-field">Radius<input id="surface-radius" type="number" min="0.1" max="2.5" step="any"></label><label id="surface-tube-field">Tube radius<input id="surface-tube" type="number" min="0.05" max="1" step="any"></label></div>
+      <div class="field-row"><label id="surface-width-field">Width<input id="surface-width" type="number" min="0.1" max="6" step="any"></label><label id="surface-height-field">Height<input id="surface-height" type="number" min="0.1" max="6" step="any"></label></div>
+      <label id="surface-depth-field">Wave depth<input id="surface-depth" type="number" min="0.1" max="6" step="any"></label>
+      <label class="group-label">Host rotation / turns per loop</label><div class="axes"><label>X<input id="surface-x" type="number" min="-8" max="8" step="any"></label><label>Y<input id="surface-y" type="number" min="-8" max="8" step="any"></label><label>Z<input id="surface-z" type="number" min="-8" max="8" step="any"></label></div>
+      <button type="submit" class="apply">Apply surface & remap layers ↗</button><div id="surface-error" role="alert"></div>
+    </form>
+    <form id="inspector-form" hidden>
+      <div class="inspector-heading"><span class="eyebrow" id="object-type"></span><h3 id="object-name"></h3><p id="object-meaning"></p></div>
+      <div id="mapping-fields" hidden>
+        <label>Place on surface<select id="host"></select></label>
+        <label>Glyph pattern<select id="pattern"><option value="grid">Grid / lattice</option><option value="band">Text band</option><option value="scatter">Seeded scatter</option><option value="curve">Surface Bézier</option></select></label>
+        <div class="field-row"><label>Samples<input id="count" type="number" min="12" max="1400" step="1"></label><label id="mapped-latitude-field">Band position °<input id="mapped-latitude" type="number" min="-85" max="85" step="any"></label></div>
+        <label id="uv-field">UV control points<textarea id="uv-points" rows="4" spellcheck="false"></textarea></label>
+        <p class="hint">Mapped glyphs stay on this surface. Rotate the host; use flow for the band or curve.</p>
+      </div>
+      <div class="field-row" id="glyph-fields"><label>Glyphs<select id="glyph-mode"><option value="hold">Hold</option><option value="flicker">Flicker</option><option value="stream">Stream</option></select></label><label>Changes / sec<input id="glyph-rate" type="number" min="0" max="30" step="any"></label></div>
+      <label>Color<select id="color"><option value="white">White</option><option value="mint">Mint</option><option value="cyan">Cyan</option><option value="amber">Amber</option><option value="acid">Acid green</option><option value="rainbow">Rainbow</option></select></label>
+      <label id="text-field">Text<input id="text" maxlength="128"></label>
+      <div class="field-row" id="geometry-fields"><label>Radius<input id="radius" type="number" min="0.1" max="2.5" step="any"></label><label id="latitude-field">Latitude °<input id="latitude" type="number" min="-85" max="85" step="any"></label></div>
+      <div id="motion-fields"><div id="rotation-fields"><label class="group-label">Rotation / turns per loop</label><div class="axes"><label>X<input id="turn-x" type="number" min="-8" max="8" step="any"></label><label>Y<input id="turn-y" type="number" min="-8" max="8" step="any"></label><label>Z<input id="turn-z" type="number" min="-8" max="8" step="any"></label></div></div>
+      <div class="field-row"><label id="flow-field">Flow / loop<input id="flow" type="number" min="-8" max="8" step="any"></label><label id="bob-field">Bob amplitude<input id="bob" type="number" min="0" max="1" step="any"></label></div></div>
+      <div class="field-row"><label>Opacity<input id="opacity" type="number" min="0" max="1" step="any"></label><label>Mark size<input id="size" type="number" min="3" max="24" step="any"></label></div>
+      <div id="bezier-fields"><label>3D control points<textarea id="points" rows="5" spellcheck="false"></textarea></label><label class="check"><input type="checkbox" id="handles"> Show curve handles</label></div>
+      <button type="submit" class="apply">Apply to this object ↗</button><div id="object-error" role="alert"></div>
+    </form>
+    <p class="inspector-foot">Surface → pattern → glyph behavior. Several layers can share one shape; free ribbons and rain remain independent.</p>
+  </aside>
+</main>
+<footer><span>GLYPH STUDIO / RECIPE V2</span><span>Built for people and the agents they work with.</span><span id="saved">Saved on this browser</span></footer>
+</body></html>
