@@ -224,3 +224,5 @@ Code-defined `motion:{type:'custom',duration:1.8,sample:(from,to,{progress,seed}
 
 
 Semantic descriptions and browser discovery are optional, additive to existing component definitions. See [Component Agent Interface](component-agent-interface.md) for stable addresses, per-page indexes/handles, state discovery and addressed method invocation.
+
+People, agents and components share the same dispatch path; see [peer discovery and the round-trip demo](component-interface.md).

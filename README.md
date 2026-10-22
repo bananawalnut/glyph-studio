@@ -177,6 +177,9 @@ Read [the programmer API](docs/programmable-geometry.md) and [authored examples]
 Open `/math` to ask the Studio Designer (local Hermes or Codex) for custom geometry **and component logic**. Run the isolated source preview, exercise its discovered typed methods, then save a new code preset or update a loaded one. The source editor supports direct edits and repair prompts. Saved presets keep surfaces, paths, composites, interfaces, handlers, organizers and transitions together; export them as ES modules. See [source authoring and isolation](docs/programmable-geometry.md#prompt-authored-source-presets). Existing JSON presets and live scenes remain separate.
 
 
-### Component Agent Interface
+### Shared Component Interface
 
-Choose **Agent interface** on `/`, `/flow` or `/math` to discover component addresses, browser-local indexes, semantic descriptions and typed methods. Inspect state, locate an element and invoke it with a receipt. Browser agents get matching WebMCP discovery/describe/invoke tools when supported; other integrations can use the JSON manifest or `window.glyphComponentAgent`. Programmers control exposed methods and descriptions through an optional directory adapter. See [the protocol and adapter API](docs/component-agent-interface.md).
+Choose **Component interface** on `/`, `/flow` or `/math` to discover component addresses, browser-local indexes, semantic descriptions and typed methods. Inspect state, locate an element and invoke it with a receipt. Browser agents get matching WebMCP discovery/describe/invoke tools when supported; other integrations can use the JSON manifest or `window.glyphComponentAgent`. Programmers control exposed methods and descriptions through an optional directory adapter. See [the protocol and adapter API](docs/component-agent-interface.md).
+
+
+At `/math#shared-interface`, a word field and sorted archive independently discover matching methods, exchange a typed packet, and return an acknowledgement. Form input, browser-agent calls and peer calls use one Component Interface. `GlyphComponents.Directory.connect(address)` provides bound endpoints; `.call(peer, method, payload, options)` uses the same dispatcher as `.invoke`. [Shared interface and example](docs/component-interface.md).

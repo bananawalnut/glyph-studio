@@ -17,5 +17,6 @@ runtime={'player':'\n'.join((root/'player'/f).read_text() for f in ['geometry.js
 (root/'dist/program-runtime.json').write_text(json.dumps(runtime))
 agent='/* Glyph Component Agent Interface — optional discovery, contracts and addressed invocation. */\nif(!globalThis.GlyphFlowCore){\n'+(root/'player/flow-core.js').read_text()+'\n}\n'+(root/'player/component-agent.js').read_text()
 (root/'dist/glyph-agent.js').write_text(agent)
+(root/'dist/exchange-model.js').write_text((root/'player/exchange-model.js').read_text())
 sizes={f:{'bytes':(root/'dist'/f).stat().st_size,'gzip_bytes':len(gzip.compress((root/'dist'/f).read_bytes(),mtime=0))} for f in ['glyph-player.js','glyph-core.wasm','glyph-flow.js','glyph-design.js','presets.js','glyph-program.js','glyph-agent.js']}
 (root/'dist/player-sizes.json').write_text(json.dumps(sizes,indent=2)+'\n');print(json.dumps(sizes))

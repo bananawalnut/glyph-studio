@@ -1,6 +1,8 @@
-# Component Agent Interface v1
+# Shared Component Interface v1
 
-Open **Agent interface** in the studio, flow page or math lab. The inspector lists addressable components, locates them on screen, shows their semantics and contracts, reads state on request and invokes a published method with JSON input. The same directory is available as browser tools and a JavaScript API. There is no model dependency in this layer.
+Open **Component interface** in the studio, flow page or math lab. The inspector lists addressable components, locates them on screen, shows their semantics and contracts, reads state on request and invokes a published method with JSON input. The same directory is available as browser tools and a JavaScript API. There is no model dependency in this layer.
+
+The interface is shared by people, agents and peer components. See [shared endpoint calls and the two-component example](component-interface.md). The older agent-specific names remain compatibility aliases.
 
 ## Discover, describe, invoke
 
