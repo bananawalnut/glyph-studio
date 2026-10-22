@@ -61,12 +61,13 @@ workshop=workshop.replace('</body>',''.join('<script>'+(dist/name).read_text()+'
 workshop=workshop.replace('href="/"','href="Glyph%20Studio.html"').replace('href="/flow"','href="Glyph%20Flow%20-%20Components.html"').replace('href="/design"','href="Glyph%20-%20Design%20System.html"')
 (root/'Glyph - Preset Workshop.html').write_text(workshop)
 mathlab=(dist/'math-lab.html').read_text()
-for name in ['design-tokens.css','math-lab.css','agent-panel.css','component-agent.css','shared-exchange.css']:
+for name in ['design-tokens.css','math-lab.css','agent-panel.css','component-agent.css','shared-exchange.css','language-workshop.css']:
     mathlab=mathlab.replace('<link rel="stylesheet" href="'+name+'">','<style>'+(dist/name).read_text()+'</style>')
-for name in ['glyph-player.js','glyph-program.js','glyph-flow.js','math-examples.js','math-lab.js','program-preview.js','program-workshop.js','agent-panel.js','glyph-agent.js','exchange-model.js','shared-exchange.js','component-agent-ui.js']:
+for name in ['glyph-player.js','glyph-program.js','glyph-flow.js','math-examples.js','math-lab.js','program-preview.js','program-workshop.js','agent-panel.js','glyph-agent.js','exchange-model.js','shared-exchange.js','component-agent-ui.js','language-workshop.js']:
     mathlab=mathlab.replace('<script defer src="'+name+'"></script>','')
+mathlab=mathlab.replace('</head>','<script>window.GLYPH_TYPESCRIPT_EXAMPLES='+json.dumps({p.stem.replace('.glyph',''):p.read_text() for p in (site/'language/examples').glob('*.ts')}).replace('<','\\u003c')+';window.GLYPH_TYPESCRIPT_SEED=window.GLYPH_TYPESCRIPT_EXAMPLES["signal-shell"];</script></head>')
 mathlab=mathlab.replace('</head>','<script>window.GLYPH_PROGRAM_RUNTIME='+json.dumps(json.loads((dist/'program-runtime.json').read_text())).replace('<','\\u003c')+';window.GLYPH_PROGRAM_SEED='+json.dumps((dist/'program-seed.js').read_text()).replace('<','\\u003c')+';</script></head>')
-mathlab=mathlab.replace('</body>',''.join('<script>'+(dist/name).read_text().replace('</script','<\\/script')+'</script>' for name in ['glyph-player.js','glyph-program.js','glyph-flow.js','math-examples.js','math-lab.js','program-preview.js','program-workshop.js','agent-panel.js','glyph-agent.js','exchange-model.js','shared-exchange.js','component-agent-ui.js'])+'</body>')
+mathlab=mathlab.replace('</body>',''.join('<script>'+(dist/name).read_text().replace('</script','<\\/script')+'</script>' for name in ['glyph-player.js','glyph-program.js','glyph-flow.js','math-examples.js','math-lab.js','program-preview.js','program-workshop.js','agent-panel.js','glyph-agent.js','exchange-model.js','shared-exchange.js','component-agent-ui.js','language-workshop.js'])+'</body>')
 mathlab=mathlab.replace('href="/"','href="Glyph%20Studio.html"').replace('href="/flow"','href="Glyph%20Flow%20-%20Components.html"').replace('href="/design"','href="Glyph%20-%20Design%20System.html"').replace('href="/presets"','href="Glyph%20-%20Preset%20Workshop.html"').replace('href="math-examples.js"','href="https://github.com/bananawalnut/glyph-studio/blob/main/dist/math-examples.js"')
 (root/'Glyph - Math Lab.html').write_text(mathlab)
 for name in ['Glyph Studio.html','Glyph Flow - Components.html','Glyph - Design System.html','Glyph - Preset Workshop.html']:
@@ -88,7 +89,7 @@ shutil.copyfile(dist/'presets'/'zenith.scene.json',root/'zenith-open-consultancy
 (root/'Glyph Studio - Read me.txt').write_text('Run the source with npm run dev, or npm run dev:agent for on-device Hermes.\nSee glyph-studio/README.md for setup. Standalone HTML works offline without the agent.\n')
 def public(file):
     return file.is_file() and not any(x in file.parts for x in ('__pycache__','.runtime','.hermes-home','.openai','target')) and file.suffix!='.pyc' and file.name!='connection.path'
-source=[site/'README.md',site/'package.json',site/'.gitignore',site/'build.py',site/'.cargo/config.toml',*sorted(site.glob('test-*.js')),*sorted(site.glob('test-*.cjs')),*sorted(dist.rglob('*')),*sorted(hermes.rglob('*')),*sorted((site/'player').rglob('*')),*sorted((site/'scripts').rglob('*')),*sorted((site/'rust').rglob('*')),*sorted((site/'docs').rglob('*'))]
+source=[site/'README.md',site/'package.json',site/'package-lock.json',site/'tsconfig.json',site/'.gitignore',site/'build.py',site/'.cargo/config.toml',*sorted(site.glob('test-*.js')),*sorted(site.glob('test-*.cjs')),*sorted(dist.rglob('*')),*sorted(hermes.rglob('*')),*sorted((site/'player').rglob('*')),*sorted((site/'scripts').rglob('*')),*sorted((site/'rust').rglob('*')),*sorted((site/'docs').rglob('*')),*sorted((site/'language').rglob('*')),*sorted((site/'.agents').rglob('*'))]
 with zipfile.ZipFile(root/'glyph-studio.zip','w',zipfile.ZIP_DEFLATED) as archive:
     for file in [root/'Glyph Studio.html',root/'Glyph - Math Lab.html',root/'Glyph - Preset Workshop.html',root/'Glyph - Design System.html',root/'Glyph Flow - Components.html',root/'Zenith Open Consultancy.html',root/'Betta - Glyph Study.html',root/'Anima - Living Glyph Studies.html',root/'zenith-open-consultancy.scene.json',root/'Glyph Studio - Read me.txt']:
         archive.write(file,file.name)

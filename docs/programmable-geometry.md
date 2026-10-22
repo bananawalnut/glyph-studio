@@ -33,6 +33,10 @@ A `Layer` supplies sampling resolution, material/glyph style, optional point def
 
 `program.at(layerId,u,v,phase)` evaluates exact authored coordinates and nested transforms for an attachment, independent of tessellation. Under `<glyph-program>`, `<glyph-anchor object="skin" u="0" v="1.57"><button>…</button></glyph-anchor>` retains real native HTML interactions. Raw buffer layers require an explicit world-space `position` anchor because they have no continuous evaluator. Offscreen/hidden playback, reduced motion, pause, seek, disconnection and context recovery use the existing player lifecycle. Program errors emit `glyph-error` and pause. The last valid buffers remain intact on an invalid sample. `.params = data` resamples without resetting playback and rejects a failing update atomically.
 
+## Compiled TypeScript authoring
+
+The optional [TypeScript authoring layer](language.md) adds typed `.glyph.ts` components and compiles them to this same `create(A,F,props)` API. It preserves raw functions and the renderer/buffer ABI. Existing JavaScript programs and saved v1 source presets remain supported. Open `/math#language` or use the repository compiler/agent skill.
+
 ## Direct buffers and performance
 
 ```js

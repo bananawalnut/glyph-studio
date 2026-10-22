@@ -6,6 +6,17 @@ A local tool for reproducible 3D glyph animations. Compose sparse shells, text s
 
 DevGraph is the canonical tracker: **Front-end tools and component libraries** (`frontend-tools-components`) → **Glyph component library** (`glyph-component-library`) → **Functional content components and responsive handoffs** (`glyph-functional-handoffs`). Arena placement and a separate ongoing-work kind remain open organizational decisions.
 
+## Compiled component language
+
+Author components in TypeScript (`.glyph.ts`) with checked props, runtime contracts, custom geometry and typed pure methods. The compiler emits portable JavaScript factories for the existing runtime, with no compiler shipped to visitors. Open [typed authoring in the studio](http://127.0.0.1:8788/math#language) to compile, preview and export.
+
+```sh
+npm ci
+npm run compile -- language/examples/signal-shell.glyph.ts --out-dir generated
+```
+
+See [language/API and deployment limits](docs/language.md) and the repository [Glyph authoring skill](.agents/skills/glyph-author/SKILL.md). Atomic design classification is optional metadata; a shadcn-style installer is not part of this version. Existing JavaScript source presets keep working.
+
 ## Functional component handoffs
 
 Open **http://127.0.0.1:8788/flow** after starting the dev server. Glyph Flow adds optional native components that accept structured content, validate input/output contracts, organize content through pure function hooks and animate immutable data copies between components. The receiving component chooses its own structure and commits only after arrival. The demo includes a draggable obstacle, a moving receiver, different signatures and invalid-input rejection.
@@ -31,7 +42,7 @@ See [component API, constraints and performance notes](docs/web-components.md). 
 
 ## Run the dev server
 
-Requires Node.js 18 or newer. The browser tool has no npm dependencies and needs no build step.
+Requires Node.js 18 or newer. The shipped browser player has no npm dependencies and needs no build step. TypeScript authoring uses a pinned development-only compiler; run npm ci to enable it.
 
 ```bash
 git clone https://github.com/bananawalnut/glyph-studio.git
