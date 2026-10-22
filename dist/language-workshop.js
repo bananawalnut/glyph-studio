@@ -8,10 +8,10 @@ window.addEventListener('DOMContentLoaded',()=>{'use strict';
       ready=true;signature=message.signature;
       preview.command({type:'pause',paused:!visible});
       $('language-method').replaceChildren(...Object.keys(signature?.methods||{}).map(name=>{const option=document.createElement('option');option.value=option.textContent=name;return option;}));
-      $('language-interface').textContent=JSON.stringify({interface:signature,state:message.state},null,2);
+      $('language-interface').textContent=JSON.stringify(signature,null,2);$('language-state').textContent=JSON.stringify({state:message.state},null,2);
       status('Type check passed · '+message.audit.points+' points · '+message.renderer+' · preview ready.');
     }
-    if(message.type==='receipt'){calling=false;$('language-interface').textContent=JSON.stringify({interface:signature,state:message.state,result:message.result},null,2);status('Typed method accepted · state and geometry updated.');}
+    if(message.type==='receipt'){calling=false;$('language-state').textContent=JSON.stringify({state:message.state,result:message.result},null,2);status('Typed method accepted · state and geometry updated.');}
     if(message.type==='error'){calling=false;ready=false;status('Runtime preview: '+message.message);}
     controls();
   };
@@ -23,7 +23,7 @@ window.addEventListener('DOMContentLoaded',()=>{'use strict';
     $('language-use').disabled=!ready||!window.glyphProgramStudio;
     $('language-call').disabled=!ready||calling||!Object.keys(signature?.methods||{}).length;
   }
-  function invalidate(){edit++;compiled=null;ready=false;calling=false;signature=null;preview.destroy();preview=new GlyphProgramPreview($('language-preview'),receive);$('language-interface').textContent='';$('language-artifact').textContent='';controls();status('Source changed. Type-check and compile before using it.');}
+  function invalidate(){edit++;compiled=null;ready=false;calling=false;signature=null;preview.destroy();preview=new GlyphProgramPreview($('language-preview'),receive);$('language-interface').textContent='';$('language-state').textContent='';$('language-artifact').textContent='';controls();status('Source changed. Type-check and compile before using it.');}
   editor.addEventListener('input',invalidate);
   $('language-compile').onclick=async()=>{
     const revision=edit;running=true;ready=false;calling=false;compiled=null;preview.destroy();preview=new GlyphProgramPreview($('language-preview'),receive);controls();status('Type-checking TypeScript…');
