@@ -8,7 +8,7 @@ DevGraph is the canonical tracker: **Front-end tools and component libraries** (
 
 ## Compiled component language
 
-Author components in TypeScript (`.glyph.ts`) with checked props, runtime contracts, custom geometry and typed pure methods. The compiler emits portable JavaScript factories for the existing runtime, with no compiler shipped to visitors. Open [typed authoring in the studio](http://127.0.0.1:8788/math#language) to compile, preview and export.
+Author components in TypeScript (`.glyph.ts`) with checked props, runtime contracts, custom geometry and typed pure methods. The compiler emits portable JavaScript factories for the existing runtime, with no compiler shipped to visitors. Open [typed authoring in the studio](http://127.0.0.1:8788/math#language) to prompt or dictate an edit, compile, preview and save/export editable components.
 
 ```sh
 npm ci
@@ -83,7 +83,7 @@ The Zenith prompt box supports Apply change, Stop, and Undo. The scene worker ex
 
 ## Studio Designer profile
 
-Both connections load the same maintained identity and five skills: scene composition, geometry and paths, animal motion, reproducibility/review, and functional flows. Scene composition and review load for scene turns; flow turns load the flow skill. The other skills load for matching scene briefs. Open **Studio Designer · profile & skills** in either prompt panel to inspect the role, skills and current provider’s tools. The profile uses the saved scene or flow, without cross-turn chat memory.
+Both connections load the same maintained identity and six skills: scene composition, geometry and paths, animal motion, reproducibility/review, functional flows, and TypeScript components. Scene composition and review load for scene turns; flow turns load the flow skill, and TypeScript turns load the TypeScript skill. The other skills load for matching scene briefs. Open **Studio Designer · profile & skills** in either prompt panel to inspect the role, skills and current provider’s tools. The profile uses the saved scene or flow, without cross-turn chat memory.
 
 See [the profile, skill routing and tool boundary](docs/studio-designer.md). Animal references can inform a plan; their procedural source is not editable through scene recipes.
 

@@ -1,6 +1,6 @@
 # Glyph Studio for Hermes
 
-This bundle contains a native Hermes plugin, five reusable skills, and a local scene bridge. An agent turns conversational briefs into function calls; the bridge validates changes and updates the browser. The Local Hermes option in the studio and Zenith prompt panels uses an on-device model through a dedicated Hermes home. A separate Codex option can use your signed-in Codex CLI. It does not copy credentials or change your active Hermes profile.
+This bundle contains a native Hermes plugin, six reusable skills, and a local scene bridge. An agent turns conversational briefs into function calls; the bridge validates changes and updates the browser. The Local Hermes option in the studio and Zenith prompt panels uses an on-device model through a dedicated Hermes home. A separate Codex option can use your signed-in Codex CLI. It does not copy credentials or change your active Hermes profile.
 
 The native registration and skill interfaces were checked against the installed Hermes **0.20.0** runtime. Development checkout reference: `7e8f50a14176e02b514631b0b04470acaadae32a`. See the [official plugin guide](https://hermes-agent.nousresearch.com/docs/guides/build-a-hermes-plugin).
 
@@ -56,7 +56,7 @@ python3 hermes/attach.py --home /absolute/hermes/home --connection /absolute/gly
 python3 hermes/attach.py --home /absolute/hermes/home --connection /absolute/glyph-studio/.runtime/connection.json
 ```
 
-The helper installs `plugins/glyph-studio`, five discoverable skills under `skills/creative/`, enables the plugin, and adds the `glyph_studio` toolset to CLI without replacing its other toolsets. It backs up existing config and refuses to overwrite an unrelated installation. Use `--replace` to update a prior installation owned by this bundle.
+The helper installs `plugins/glyph-studio`, six discoverable skills under `skills/creative/`, enables the plugin, and adds the `glyph_studio` toolset to CLI without replacing its other toolsets. It backs up existing config and refuses to overwrite an unrelated installation. Use `--replace` to update a prior installation owned by this bundle.
 
 `--designer-profile` additionally installs the maintained Studio Designer identity into that exact home and backs up existing `SOUL.md` and `studio-designer.json`. It does not switch Hermes’ active profile. The dedicated `start.py` home uses this flag automatically. See [profile and skills](../docs/studio-designer.md).
 
@@ -90,7 +90,7 @@ All scene mutations require `expected_revision` from the latest read. Conflicts 
 
 ## Skill and fallback
 
-Load `glyph-studio` through normal skill discovery after installation, or explicitly load the plugin's `glyph-studio:design` skill. Both are packaged from the same source. The plugin also registers `glyph-studio:glyph-surfaces`, `glyph-studio:glyph-biomotion` and `glyph-studio:glyph-review` and `glyph-studio:glyph-flow`; corresponding folders support normal skill discovery. The dedicated worker injects the maintained identity, workflow and relevant skills automatically.
+Load `glyph-studio` through normal skill discovery after installation, or explicitly load the plugin's `glyph-studio:design` skill. Both are packaged from the same source. The plugin also registers `glyph-studio:glyph-surfaces`, `glyph-studio:glyph-biomotion` and `glyph-studio:glyph-review` , `glyph-studio:glyph-flow` and `glyph-studio:glyph-typescript`; corresponding folders support normal skill discovery. The dedicated worker injects the maintained identity, workflow and relevant skills automatically.
 
 Without the plugin, the skill can use its dependency-free CLI helper:
 

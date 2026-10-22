@@ -11,8 +11,9 @@ The studio has one maintained procedural motion designer, available through Loca
 | `glyph-biomotion` | Anatomy, distinct locomotion and research/approximation boundaries | Matching animal/movement terms |
 | `glyph-review` | Validity, loop closure, density and honest verification | Scene turns |
 | `glyph-flow` | Programmer-owned interfaces, contracts, staged flow edits and animated method calls | Flow turns |
+| `glyph-typescript` | Editable typed props, geometry, methods, organizers and motion | TypeScript turns |
 
-Selection matches whole terms, case-insensitively, against the current prompt. Explicitly naming a skill also selects it. Hermes and Codex assemble the same context using Python and JavaScript implementations checked for parity. The plugin packages all five skill folders for normal Hermes discovery as well.
+The target selects the dedicated flow or TypeScript skill. Other scene skill selection matches whole terms, case-insensitively, against the current prompt; naming a scene skill also selects it. Hermes and Codex assemble the same context using Python and JavaScript implementations checked for parity. The plugin packages all six skill folders for normal Hermes discovery as well.
 
 The designer reads the saved scene afresh. Cross-turn conversational memory is off. Durable direction belongs in the maintained profile/workflow or the scene’s named layers and meanings. Zenith’s Shell + Signal aesthetic is contextual, not imposed on every project.
 
@@ -32,7 +33,7 @@ The animal library describes the existing Anima components. These tools cannot a
 
 `npm run dev:agent` installs the maintained identity into the project’s dedicated `.hermes-home`. Attaching the plugin to another Hermes home preserves its identity unless `attach.py --designer-profile` is explicitly selected; that option backs up existing identity files. Neither installation switches the globally active profile or copies provider credentials.
 
-Open **Studio Designer · profile & skills** in the studio Prompt tab or the Zenith prompt panel. It shows the shared role, five skills, effective tool boundary and memory behavior. Provider selection still controls where inference happens.
+Open **Studio Designer · profile & skills** in the studio Prompt tab or the Zenith prompt panel. It shows the shared role, six skills, effective tool boundary and memory behavior. Provider selection still controls where inference happens.
 
 Live profile checks were completed through both providers: each used the profile library and analytic audit tools while preserving the saved Zenith scene at revision 19.
 
@@ -45,3 +46,9 @@ The flow page loads `glyph-flow`, covering component-owned interfaces, contracts
 ## Shared preset design system
 
 The maintained geometry and composition skills use glyph_studio_library with kind design-system or a focused object/motion/material/behavior ID. Objects return ordinary validated scene candidates, not applied changes. Flow reads include the same behavior presets, with explicit layout/interaction/geometry targets. Flow designers need no extra scene authority to inspect their presets. Preserve existing content and clocks when combining instances, and use the established revision gates when committing. See [the design system](design-system.md).
+
+## TypeScript component scope
+
+At `/math#language`, Local Hermes and Codex return complete TypeScript source proposals with no tools. Both load the maintained TypeScript skill, current source, API declarations and compiler/preview feedback. The bridge type-checks before a revision-checked draft commit. The browser automatically compiles the accepted draft and runs the isolated preview. Invalid, stale or cancelled proposals preserve the draft, and Undo uses the same revision guard.
+
+Every designer panel has its own provider picker, prompt and on-device Dictate control. A transcript is added for review, never submitted automatically. TypeScript components save separately in the shared design system with both editable source and server-produced compiled module/manifest. Existing JavaScript presets and data-only scene/flow targets remain available. See [source persistence and workflow](language.md).

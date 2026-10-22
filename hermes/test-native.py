@@ -25,7 +25,7 @@ with tempfile.TemporaryDirectory(prefix='glyph-native-') as temporary:
         loaded=manager._plugins['glyph-studio'];assert loaded.enabled,loaded.error
         assert len(loaded.tools_registered)==14
         assert manager._plugin_skills['glyph-studio:design']['path'].is_file()
-        for skill in ['glyph-surfaces','glyph-biomotion','glyph-review','glyph-flow']:
+        for skill in ['glyph-surfaces','glyph-biomotion','glyph-review','glyph-flow','glyph-typescript']:
             assert manager._plugin_skills['glyph-studio:'+skill]['path'].is_file()
         library=json.loads(registry.dispatch('glyph_studio_library',{'kind':'profile'}));assert library['profile']['id']=='glyph-studio-designer'
         design=json.loads(registry.dispatch('glyph_studio_library',{'kind':'object','id':'ribbon'}));assert len(design['scene']['objects'])==3
@@ -37,6 +37,6 @@ with tempfile.TemporaryDirectory(prefix='glyph-native-') as temporary:
         assert changed['scene']['surfaces'][0]['shape']=='cylinder'
         preview=json.loads(registry.dispatch('glyph_studio_preview',{'frame':60,'expected_revision':changed['revision']}));assert preview['ok'],preview
         assert preview['view']['frame']==60
-        print('PASS Hermes native manifest parsing, real plugin load, 14 registered tools, five bundled skills, library/audit and live scene/preview dispatch (no inference)')
+        print('PASS Hermes native manifest parsing, real plugin load, 14 registered tools, six bundled skills, library/audit and live scene/preview dispatch (no inference)')
     finally:
         process.terminate();process.communicate(timeout=10)

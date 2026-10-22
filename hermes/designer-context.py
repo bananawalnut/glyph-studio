@@ -11,7 +11,15 @@ def context(prompt,provider,plugin=PLUGIN,target=None):
     selected=[]
     for skill in profile['skills']:
         terms=[skill['id'],*skill['triggers']]
-        if (target=='flow' and skill['id']=='glyph-flow') or (target!='flow' and skill['id']!='glyph-flow' and (skill['always'] or any(re.search(r'(?<!\w)'+re.escape(term)+r'(?!\w)',prompt,re.I) for term in terms))):
+        if target=='typescript':
+            include=skill['id']=='glyph-typescript'
+        elif skill['id']=='glyph-typescript':
+            include=False
+        elif target=='flow':
+            include=skill['id']=='glyph-flow'
+        else:
+            include=skill['id']!='glyph-flow' and (skill['always'] or any(re.search(r'(?<!\w)'+re.escape(term)+r'(?!\w)',prompt,re.I) for term in terms))
+        if include:
             selected.append(skill['id'])
     pieces=[(plugin/'designer'/name).read_text() for name in [profile['identity'],profile['workflow']]]
     pieces+=['RUNTIME: '+profile['execution'][provider]]

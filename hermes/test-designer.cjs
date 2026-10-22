@@ -3,7 +3,7 @@ const A=require('node:assert/strict'),fs=require('node:fs'),os=require('node:os'
 const D=require('./designer.cjs'),{createBridge}=require('./bridge.cjs'),worker=require('./codex-worker.cjs');
 (async()=>{const directory=fs.mkdtempSync(path.join(os.tmpdir(),'glyph-designer-'));let bridge,child;
 try{
- const profile=D.profile();A.equal(profile.skills.length,5);A.equal(profile.tools.hermes.length,14);A.equal(profile.tools.codex.length,6);
+ const profile=D.profile();A.equal(profile.skills.length,6);A.equal(profile.tools.hermes.length,14);A.equal(profile.tools.codex.length,6);
  for(const provider of ['hermes','codex'])for(const prompt of ['Make the koi fins realistic','Change the torus surface and cubic path','A waveform has no keyword match','Check the profile']){
   const js=D.context(prompt,provider),py=spawnSync('python3',[path.join(__dirname,'designer-context.py')],{input:JSON.stringify({prompt,provider}),encoding:'utf8'});A.equal(py.status,0,py.stderr);A.deepEqual(JSON.parse(py.stdout),js);
  }
@@ -11,6 +11,7 @@ try{
  A.throws(()=>D.library({kind:'skill',id:'../../connection.json'}));A.throws(()=>D.library({kind:'preset',id:'__proto__'}));
  A.equal(D.library({kind:'animal'}).animals.length,6);for(const animal of Object.keys(D.ANIMALS)){const entry=D.library({kind:'animal',id:animal});A.equal(entry.editable,false);A(entry.glyphs>0);}
  for(const provider of ['hermes','codex']){const prompt='Add a record to source.add',js=D.context(prompt,provider,'flow'),py=spawnSync('python3',[path.join(__dirname,'designer-context.py')],{input:JSON.stringify({prompt,provider,target:'flow'}),encoding:'utf8'});A.equal(py.status,0,py.stderr);A.deepEqual(JSON.parse(py.stdout),js);A.deepEqual(js.skills,['glyph-flow']);}
+ for(const provider of ['hermes','codex']){const request={prompt:'edit component',provider,target:'typescript'},js=D.context(request.prompt,provider,request.target),py=spawnSync('python3',[path.join(__dirname,'designer-context.py')],{input:JSON.stringify(request),encoding:'utf8'});A.equal(py.status,0,py.stderr);A.deepEqual(JSON.parse(py.stdout),js);A.deepEqual(js.skills,['glyph-typescript']);A.deepEqual(D.toolNames(provider,'typescript'),[]);}
  const exported=JSON.parse(fs.readFileSync(path.join(__dirname,'../dist/agent-tools.json'),'utf8'));
  const python=spawnSync('python3',['-c','import runpy,json; print(json.dumps(runpy.run_path("hermes/plugin/glyph-studio/schemas.py")["TOOLS"]))'],{cwd:path.join(__dirname,'..'),encoding:'utf8'});A.equal(python.status,0,python.stderr);A.deepEqual(exported,JSON.parse(python.stdout));
  bridge=createBridge({directory});const info=await bridge.start(0);bridge.call('glyph_studio_preview',{frame:0,playing:false,expected_revision:0});const before=bridge.snapshot();

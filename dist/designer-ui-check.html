@@ -1,0 +1,27 @@
+<!doctype html><meta charset="utf-8"><title>Designer panel checks</title><h1>Designer UI checks</h1><pre id="result">RUNNING</pre><main id="panels"></main>
+<script>
+// Browser-only fixture: all provider/voice requests and microphone APIs are simulated.
+window.GLYPH_BRIDGE={token:'fixture-only'};const calls=[];let typedFlush=0,jsFlush=0,tracksStopped=0;
+window.glyphTypeScriptStudio={flush:async()=>{typedFlush++;},feedback:()=> 'typed compiler feedback'};
+window.glyphProgramStudio={flush:async()=>{jsFlush++;},feedback:()=> 'JavaScript feedback'};
+const profiles={ok:true,canUndo:false,providers:[{id:'hermes',connected:true,modelLabel:'Fixture'},{id:'codex',connected:true,modelLabel:'Fixture'}],designer:{role:'Designer',purpose:'Test',skills:[],tools:{hermes:[],codex:[]},memory:'None'},job:null};
+window.fetch=async(url,options={})=>{const route=String(url).split('?')[0];if(options.method==='POST')calls.push({route,body:route==='/api/voice'?null:JSON.parse(options.body)});return {ok:true,json:async()=>route==='/api/voice'?(options.method==='POST'?{text:'Make the typed shell breathe.'}:{available:true}):profiles};};
+Object.defineProperty(navigator,'mediaDevices',{value:{getUserMedia:async()=>({getTracks:()=>[{stop:()=>tracksStopped++}]})},configurable:true});
+window.MediaRecorder=class{static isTypeSupported(){return true;}constructor(){this.state='inactive';this.mimeType='audio/webm';}start(){this.state='recording';}stop(){this.state='inactive';this.ondataavailable({data:new Blob(['fixture audio'],{type:'audio/webm'})});queueMicrotask(()=>this.onstop());}};
+function panel(prefix,target){const key=id=>prefix?prefix+'-'+id:id;return `<section class="agent-panel" data-agent-target="${target}" ${prefix?'data-agent-prefix="'+prefix+'"':''}><select id="${key('agent-provider')}"><option value="hermes">Local Hermes</option><option value="codex">Codex</option></select><span id="${key('agent-model')}"></span><form id="${key('agent-form')}"><textarea id="${key('agent-prompt')}"></textarea><div class="agent-actions"><button id="${key('agent-send')}" type="submit">Generate</button><button id="${key('agent-stop')}" type="button">Stop</button><button id="${key('agent-undo')}" type="button">Undo</button><span id="${key('agent-status')}"></span></div></form><p id="${key('agent-result')}"></p><p id="${key('agent-privacy')}"></p><details id="${key('designer-info')}"><p id="${key('designer-role')}"></p><ul id="${key('designer-skills')}"></ul><p id="${key('designer-tools')}"></p><p id="${key('designer-memory')}"></p></details></section>`;}
+document.getElementById('panels').innerHTML=panel('typescript','typescript')+panel('','program');
+</script><script defer src="agent-panel.js"></script><script>
+window.addEventListener('DOMContentLoaded',async()=>{const $=id=>document.getElementById(id),check=(v,m)=>{if(!v)throw Error(m);},wait=async f=>{for(let i=0;i<100;i++){if(f())return;await new Promise(r=>setTimeout(r,20));}throw Error('UI fixture timed out');};try{
+ await wait(()=>$('typescript-agent-dictate')&&!$('typescript-agent-dictate').disabled);
+ $('typescript-agent-dictate').click();await wait(()=>$('typescript-agent-dictate').getAttribute('aria-pressed')==='true');
+ $('typescript-agent-dictate').click();await wait(()=>$('typescript-agent-prompt').value.includes('typed shell'));
+ check($('agent-prompt').value==='','Transcript leaked into JavaScript panel');check(tracksStopped>0,'Recording tracks were not released');
+ check(calls.filter(c=>c.route==='/api/agent').length===0,'Dictation submitted without review');
+ $('typescript-agent-form').requestSubmit();await wait(()=>calls.some(c=>c.body?.target==='typescript'));
+ const typed=calls.find(c=>c.body?.target==='typescript').body;check(typedFlush===1&&typed.preview_feedback==='typed compiler feedback'&&typed.prompt==='Make the typed shell breathe.','Wrong typed source context');
+ $('agent-prompt').value='Preserve the JavaScript source.';$('agent-form').requestSubmit();await wait(()=>calls.some(c=>c.body?.target==='program'));
+ check(jsFlush===1&&calls.find(c=>c.body?.target==='program').body.preview_feedback==='JavaScript feedback','Old JavaScript designer changed');
+ check(document.querySelectorAll('#agent-dictate').length===1&&document.querySelectorAll('#typescript-agent-dictate').length===1,'Panel IDs collide');
+ $('result').textContent='ALL PASSED\nIndependent panels and microphone controls\nOn-device transcript targets the TypeScript prompt only\nReview before submit\nCorrect target, draft flush and feedback for both designers\nRecording tracks released\nNo real microphone or model was used';
+ }catch(error){$('result').textContent='FAILED: '+error.message;}});
+</script>

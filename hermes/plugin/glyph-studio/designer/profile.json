@@ -99,6 +99,16 @@
         "add",
         "record"
       ]
+    },
+    {
+      "id": "glyph-typescript",
+      "name": "TypeScript components",
+      "description": "Write editable typed component source for compilation, isolated preview and reusable saves.",
+      "always": false,
+      "triggers": [
+        "typescript",
+        ".glyph.ts"
+      ]
     }
   ],
   "tools": {

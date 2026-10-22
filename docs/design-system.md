@@ -96,3 +96,7 @@ The original player and flow bundles stay unchanged. The preset module is option
 ## Your own objects and animations
 
 The [preset workshop](http://127.0.0.1:8788/presets) extends the library with prompt-created, data-only custom objects and motions. Hermes and Codex edit a separate preview draft; **Save new preset** persists a named variation. Custom entries appear below the built-in gallery and are discoverable by the designer. Reopen a copy, transfer a motion onto other geometry, apply an object to the current scene, or export its JSON. The renderer schema and built-in IDs remain unchanged. See [the preset/voice contract](preset-workshop.md) for persistence, version checks, role-based motion mapping, portability and dictation.
+
+## Editable TypeScript components
+
+The TypeScript designer at `/math#language` can write or edit components from typed or dictated prompts, automatically compile and preview accepted proposals, then save them in the shared custom library. Each component retains `.glyph.ts` source and a matching server-compiled module/manifest. Load & edit, save as variation, update and export work independently of existing JavaScript presets and scene recipes. See [TypeScript workflow and version guards](language.md).
